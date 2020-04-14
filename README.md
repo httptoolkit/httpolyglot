@@ -8,7 +8,7 @@ A module for serving http and https connections over the same port.
 Requirements
 ============
 
-* [node.js](http://nodejs.org/) -- v0.10.0 or newer
+* [node.js](http://nodejs.org/) -- v8.0.0 or newer
 
 
 Install
