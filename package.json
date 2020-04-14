@@ -1,13 +1,29 @@
-{ "name": "httpolyglot",
-  "version": "0.1.2",
-  "author": "Brian White <mscdex@mscdex.net>",
+{
+  "name": "@httptoolkit/httpolyglot",
+  "version": "0.2.0",
+  "author": "Tim Perry <pimterry@gmail.com>",
   "description": "Serve http and https connections over the same port with node.js",
   "main": "./lib/index.js",
   "scripts": {
     "test": "node test/test.js"
   },
-  "engines": { "node": ">=8.0.0" },
-  "keywords": [ "http", "https", "multiplex", "polyglot" ],
-  "licenses": [ { "type": "MIT", "url": "http://github.com/mscdex/httpolyglot/raw/master/LICENSE" } ],
-  "repository" : { "type": "git", "url": "http://github.com/mscdex/httpolyglot.git" }
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "keywords": [
+    "http",
+    "https",
+    "multiplex",
+    "polyglot"
+  ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/httptoolkit/httpolyglot/raw/master/LICENSE"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/httptoolkit/httpolyglot.git"
+  }
 }
