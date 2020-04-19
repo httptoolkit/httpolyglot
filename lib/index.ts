@@ -9,7 +9,7 @@ const notfoundrequestlistener = function (
     res: http.ServerResponse
 ) {
     res.statusCode = 404;
-    res.write(404);
+    res.write("404");
     res.end();
 };
 const notfoundupgradelistener = function (
@@ -52,7 +52,7 @@ function createServer(
     const onconnection = serverspdy.listeners("connection");
     serverspdy.removeAllListeners("connection");
     function handletls(socket: net.Socket) {
-        onconnection.forEach((listeners:Function) =>
+        onconnection.forEach((listeners: Function) =>
             Reflect.apply(listeners, serverspdy, [socket])
         );
     }

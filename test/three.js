@@ -13,12 +13,10 @@ const server = createServer(
         cert: fs.readFileSync(path.join(__dirname, "server.crt")),
     },
     function (req, res) {
-        console.log(req, res);
         res.writeHead(200, { "Content-Type": "text/plain" });
         res.end("websocket");
     },
     function (req, socket, head) {
-        console.log(req, head);
         socket.write(
             "HTTP/1.1 101 Web Socket Protocol Handshake\r\n" +
                 "Upgrade: WebSocket\r\n" +
