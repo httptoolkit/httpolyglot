@@ -3,11 +3,11 @@ import net from "net";
 import spdy from "spdy";
 import events from "events";
 import https from "https";
-import { inherits } from "util";
-type ServerOptions = http.ServerOptions & https.ServerOptions;
-class Server extends net.Server {
+import tls from "tls";
+type ServerOptions = https.ServerOptions;
+class Server extends tls.Server {
     constructor(config: ServerOptions, requestListener: http.RequestListener) {
-        super();
+        super(config);
         const serverhttp = http.createServer(config, requestListener);
         const serverhttps = spdy.createServer(config, requestListener);
         if (typeof config === "object") {
@@ -42,7 +42,7 @@ class Server extends net.Server {
         }
     }
 }
-inherits(Server, https.Server);
+
 function createServer(
     config: ServerOptions,
     requestListener: http.RequestListener
