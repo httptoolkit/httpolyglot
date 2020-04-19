@@ -1,22 +1,24 @@
 import { createServer } from "../lib/index.js";
 import fs from "fs";
 const port = 9001;
-createServer({
-    key: fs.readFileSync("server.key"),
-    cert: fs.readFileSync("server.crt"),
-}, function (req, res) {
-    if (!req.socket) {
-        const host = req.headers["host"];
-        const originurl = req.url || "";
-        const tourl = new URL(originurl, "https://" + host);
-        tourl.port = String(port);
-        res.writeHead(302, { Location: tourl.href });
-        return res.end();
+createServer(
+    {
+        key: fs.readFileSync("server.key"),
+        cert: fs.readFileSync("server.crt"),
+    },
+    function (req, res) {
+        if (!req.socket) {
+            const host = req.headers["host"];
+            const originurl = req.url || "";
+            const tourl = new URL(originurl, "https://" + host);
+            tourl.port = String(port);
+            res.writeHead(302, { Location: tourl.href });
+            return res.end();
+        } else {
+            res.writeHead(200, { "Content-Type": "text/plain" });
+            res.end("Welcome, HTTPS user!");
+        }
     }
-    else {
-        res.writeHead(200, { "Content-Type": "text/plain" });
-        res.end("Welcome, HTTPS user!");
-    }
-}).listen(port, "localhost", function () {
+).listen(port, "localhost", function () {
     console.log("httpolyglot server listening on port " + port);
 });

@@ -7,7 +7,7 @@
     "scripts": {
         "build": "tsc",
         "test": "node test/test.js",
-        "prettier": "prettier --write *.js *.md *.json ./**/*.js */**.ts"
+        "prettier": "prettier --write  *.md *.json ./**/*.js */**.ts"
     },
     "engines": {
         "node": ">=8.0.0"

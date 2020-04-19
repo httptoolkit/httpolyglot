@@ -22,6 +22,7 @@ class Server extends net.Server {
 
                     const firstByte = data[0];
                     socket.unshift(data);
+
                     if (firstByte === 22) {
                         serverhttps.emit("connection", socket);
                     } else if (32 < firstByte && firstByte < 127) {
@@ -34,7 +35,11 @@ class Server extends net.Server {
                     socket.resume();
                 });
             };
-            events.EventEmitter.prototype.on.call(this, "connection", connectionListener);
+            events.EventEmitter.prototype.on.call(
+                this,
+                "connection",
+                connectionListener
+            );
         } else {
             throw new Error("options are required!");
         }
