@@ -1,10 +1,11 @@
 import { createServer } from "../lib/index.js";
 import fs from "fs";
+import path from "path";
 const port = 9001;
 createServer(
     {
-        key: fs.readFileSync("server.key"),
-        cert: fs.readFileSync("server.crt"),
+        key: fs.readFileSync(path.join(__dirname, "server.key")),
+        cert: fs.readFileSync(path.join(__dirname, "server.crt")),
     },
     function (req, res) {
         if (!req.socket) {

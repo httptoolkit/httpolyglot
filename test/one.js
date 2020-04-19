@@ -1,10 +1,11 @@
 import { createServer } from "../lib/index.js";
 import fs from "fs";
 const port = 9000;
+import path from "path";
 createServer(
     {
-        key: fs.readFileSync("server.key"),
-        cert: fs.readFileSync("server.crt"),
+        key: fs.readFileSync(path.join(__dirname, "server.key")),
+        cert: fs.readFileSync(path.join(__dirname, "server.crt")),
     },
     function (req, res) {
         res.writeHead(200, { "Content-Type": "text/plain" });
