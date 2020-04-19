@@ -14,7 +14,7 @@ const notfoundrequestlistener = function (
     res: http.ServerResponse
 ) {
     res.statusCode = 404;
-    res.write("404");
+    
     res.end();
 };
 const notfoundupgradelistener = function (
