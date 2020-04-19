@@ -1,52 +1,50 @@
+import events from "events";
 import http from "http";
+import https from "https";
 import net from "net";
 import spdy from "spdy";
-import events from "events";
-import https from "https";
-import tls from "tls";
 type ServerOptions = https.ServerOptions;
-class Server extends tls.Server {
-    constructor(config: ServerOptions, requestListener: http.RequestListener) {
-        super(config);
-        const serverhttp = http.createServer(config, requestListener);
-        const serverhttps = spdy.createServer(config, requestListener);
-        if (typeof config === "object") {
-            events.EventEmitter.prototype.removeAllListeners.call(
-                this,
-                "connection"
-            );
-            const connectionListener = function (socket: net.Socket) {
-                socket.on("error", function onError() {});
-                socket.once("data", (data) => {
-                    socket.pause();
-
-                    const firstByte = data[0];
-                    socket.unshift(data);
-
-                    if (firstByte === 22) {
-                        serverhttps.emit("connection", socket);
-                    } else if (32 < firstByte && firstByte < 127) {
-                        serverhttp.emit("connection", socket);
-                    }
-
-                    socket.resume();
-                });
-            };
-            events.EventEmitter.prototype.on.call(
-                this,
-                "connection",
-                connectionListener
-            );
-        } else {
-            throw new Error("options are required!");
-        }
-    }
-}
 
 function createServer(
     config: ServerOptions,
     requestListener: http.RequestListener
 ) {
-    return new Server(config, requestListener);
+    if (!(typeof config === "object")) {
+        throw new Error("options are required!");
+    }
+    const serverhttp = http.createServer(config, requestListener);
+    const serverspdy = spdy.createServer(config, requestListener);
+
+    const onconnection = serverspdy.listeners("connection");
+    events.EventEmitter.prototype.removeAllListeners.call(
+        serverspdy,
+        "connection"
+    );
+
+    const connectionListener = function (socket: net.Socket) {
+        socket.on("error", function onError() {});
+        socket.once("data", (data) => {
+            socket.pause();
+
+            const firstByte = data[0];
+            socket.unshift(data);
+
+            if (firstByte === 22) {
+                onconnection.forEach((listener) => {
+                    listener.call(serverspdy, socket);
+                });
+            } else if (32 < firstByte && firstByte < 127) {
+                serverhttp.emit("connection", socket);
+            }
+            socket.resume();
+        });
+    };
+    events.EventEmitter.prototype.on.call(
+        serverspdy,
+        "connection",
+        connectionListener
+    );
+
+    return serverspdy;
 }
-export { createServer, Server };
+export { createServer };
