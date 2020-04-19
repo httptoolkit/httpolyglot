@@ -8,7 +8,9 @@ Serve http and https and spdy and http2 connections over the same port with node
 
 # Install
 
-    npm install @masx200/http-https-spdy-http2-polyglot
+```shell
+yarn add spdy  @masx200/http-https-spdy-http2-polyglot
+```
 
 # Examples
 
