@@ -26,8 +26,50 @@ function createServer(
         let firsthandle = true;
         let ishttp = false;
         let istls = false;
-        const streamhttp = new Duplex();
-        const streamtls = new Duplex();
+   
+        const streamhttp = new Duplex({
+            write(
+                chunk: any,
+                encoding: string,
+                callback: (error?: Error | null | undefined) => void
+            ) {},
+            writev(
+                chunks: {
+                    chunk: any;
+                    encoding: string;
+                }[],
+                callback: (error?: Error | null | undefined) => void
+            ) {},
+
+            final(callback: (error?: Error | null | undefined) => void) {},
+            read(size: number) {},
+            destroy(
+                error: Error | null,
+                callback: (error: Error | null) => void
+            ) {},
+        });
+      
+        const streamtls = new Duplex({
+            write(
+                chunk: any,
+                encoding: string,
+                callback: (error?: Error | null | undefined) => void
+            ) {},
+            writev(
+                chunks: {
+                    chunk: any;
+                    encoding: string;
+                }[],
+                callback: (error?: Error | null | undefined) => void
+            ) {},
+
+            final(callback: (error?: Error | null | undefined) => void) {},
+            read(size: number) {},
+            destroy(
+                error: Error | null,
+                callback: (error: Error | null) => void
+            ) {},
+        });
 
         Reflect.set(streamhttp, "write", function (
             chunk: string | Uint8Array,
