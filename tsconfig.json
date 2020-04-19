@@ -12,7 +12,7 @@
         "checkJs": false,
         "charset": "utf-8",
         "strict": true,
-        "target": "ESNEXT",
+        "target": "es2019",
         "module": "ESNEXT",
         "importHelpers": true,
         "noImplicitAny": true,
