@@ -4,7 +4,14 @@ const port = 8999;
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-
+import ws from "ws";
+const wsServer = new ws.Server({ noServer: true });
+wsServer.on("connection", (socket, req) => {
+    socket.send(JSON.stringify(req.headers));
+    socket.send(
+        ("encrypted" in req.socket ? "HTTPS" : "HTTP") + " Connection!"
+    );
+});
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const server = createServer(
@@ -17,14 +24,9 @@ const server = createServer(
         res.end("websocket");
     },
     function (req, socket, head) {
-        socket.write(
-            "HTTP/1.1 101 Web Socket Protocol Handshake\r\n" +
-                "Upgrade: WebSocket\r\n" +
-                "Connection: Upgrade\r\n" +
-                "\r\n"
-        );
-
-        socket.pipe(socket);
+        wsServer.handleUpgrade(req, socket, head, function done(ws) {
+            wsServer.emit("connection", ws, req);
+        });
     }
 );
 
