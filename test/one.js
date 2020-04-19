@@ -14,7 +14,7 @@ createServer(
     },
     function (req, res) {
         res.writeHead(200, { "Content-Type": "text/plain" });
-        res.write("alpnProtocol", req.socket.alpnProtocol + " Connection!");
+        res.write("alpnProtocol:" + req.socket.alpnProtocol + " Connection!\n");
         res.end(
             ("encrypted" in req.socket ? "HTTPS" : "HTTP") + " Connection!"
         );
