@@ -4,36 +4,57 @@ import net from "net";
 import spdy from "spdy";
 
 type ServerOptions = https.ServerOptions;
-
+const notfoundrequestlistener = function (
+    req: http.IncomingMessage,
+    res: http.ServerResponse
+) {
+    res.statusCode = 404;
+    res.write(404);
+    res.end();
+};
+const notfoundupgradelistener = function (
+    req: http.IncomingMessage,
+    socket: net.Socket,
+    head: Buffer
+) {
+    socket.write(`HTTP/1.1 404 Not Found\r\nConnection: keep-alive\r\n\r\n`);
+    socket.destroy();
+};
 function createServer(
     config: ServerOptions,
-    requestListener: http.RequestListener
+    requestListener: http.RequestListener = notfoundrequestlistener,
+    upgradeListener: (
+        req: http.IncomingMessage,
+        socket: net.Socket,
+        head: Buffer
+    ) => void = notfoundupgradelistener
 ) {
     if (!(typeof config === "object")) {
         throw new Error("options are required!");
     }
-    function onrequest(req: http.IncomingMessage, res: http.ServerResponse) {
-        
-        requestListener(req, res);
-    }
-    const serverhttp = http.createServer(config, requestListener);
-    const serverspdy = spdy.createServer(config, requestListener);
+
+    const serverhttp = http.createServer(config);
+    //@ts-ignore
+    const serverspdy = spdy.createServer(config);
     serverhttp.removeAllListeners("request");
     serverspdy.removeAllListeners("request");
-    serverspdy.addListener("request", onrequest);
+    serverspdy.addListener("request", requestListener);
     serverhttp.addListener("request", (req, res) => {
         serverspdy.emit("request", req, res);
     });
     serverhttp.addListener(
         "upgrade",
-        (response: http.IncomingMessage, socket: net.Socket, head: Buffer) => {
-            serverspdy.emit("upgrade", response, socket, head);
+        (req: http.IncomingMessage, socket: net.Socket, head: Buffer) => {
+            serverspdy.emit("upgrade", req, socket, head);
         }
     );
+    serverspdy.addListener("upgrade", upgradeListener);
     const onconnection = serverspdy.listeners("connection");
     serverspdy.removeAllListeners("connection");
     function handletls(socket: net.Socket) {
-        onconnection.forEach((listeners) => listeners.call(serverspdy, socket));
+        onconnection.forEach((listeners:Function) =>
+            Reflect.apply(listeners, serverspdy, [socket])
+        );
     }
     function handlehttp(socket: net.Socket) {
         serverhttp.emit("connection", socket);
