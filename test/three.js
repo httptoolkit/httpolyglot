@@ -21,6 +21,7 @@ const server = createServer(
     },
     function (req, res) {
         res.writeHead(200, { "Content-Type": "text/plain" });
+        
         res.end("websocket");
     },
     function (req, socket, head) {
