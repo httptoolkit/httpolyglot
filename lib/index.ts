@@ -1,9 +1,8 @@
-import events from "events";
 import http from "http";
 import https from "https";
 import net from "net";
 import spdy from "spdy";
-const eventproto = events.EventEmitter.prototype;
+
 type ServerOptions = https.ServerOptions;
 
 function createServer(
@@ -13,19 +12,35 @@ function createServer(
     if (!(typeof config === "object")) {
         throw new Error("options are required!");
     }
+    function onrequest(req: http.IncomingMessage, res: http.ServerResponse) {
+        
+        requestListener(req, res);
+    }
     const serverhttp = http.createServer(config, requestListener);
     const serverspdy = spdy.createServer(config, requestListener);
-    eventproto.removeAllListeners.call(serverhttp, "request");
-    eventproto.removeAllListeners.call(serverspdy, "request");
+    serverhttp.removeAllListeners("request");
+    serverspdy.removeAllListeners("request");
+    serverspdy.addListener("request", onrequest);
+    serverhttp.addListener("request", (req, res) => {
+        serverspdy.emit("request", req, res);
+    });
+    serverhttp.addListener(
+        "upgrade",
+        (response: http.IncomingMessage, socket: net.Socket, head: Buffer) => {
+            serverspdy.emit("upgrade", response, socket, head);
+        }
+    );
     const onconnection = serverspdy.listeners("connection");
-    eventproto.removeAllListeners.call(serverspdy, "connection");
+    serverspdy.removeAllListeners("connection");
     function handletls(socket: net.Socket) {
         onconnection.forEach((listeners) => listeners.call(serverspdy, socket));
     }
     function handlehttp(socket: net.Socket) {
         serverhttp.emit("connection", socket);
     }
-    const connectionListener = function (socket: net.Socket) {
+    serverspdy.addListener("connection", connectionListener);
+
+    function connectionListener(socket: net.Socket) {
         socket.on("error", function onError() {});
 
         let ishttp = false;
@@ -55,8 +70,7 @@ function createServer(
             }
         }
         /* 测试发现不能使用on data事件,会收不到响应 */
-    };
-    eventproto.addListener.call(serverspdy, "connection", connectionListener);
+    }
 
     return serverspdy;
 }
