@@ -65,7 +65,7 @@ httpolyglot
 
 ## Exports
 
--   **Server** - A class similar to https.Server (except instances have `setTimeout()` from http.Server).
+-   **Server** - A class similar to https.Server .
 
 -   **createServer**(< _object_ >tlsConfig[, < _function_ >requestListener]) - _Server_ - Creates and returns a new Server instance.
 
