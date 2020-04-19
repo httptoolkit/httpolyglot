@@ -28,7 +28,9 @@ httpolyglot
         },
         function (req, res) {
             res.writeHead(200, { "Content-Type": "text/plain" });
-            res.end((req.socket.encrypted ? "HTTPS" : "HTTP") + " Connection!");
+            res.end(
+                ("encrypted" in req.socket ? "HTTPS" : "HTTP") + " Connection!"
+            );
         }
     )
     .listen(port, "localhost", function () {
@@ -49,7 +51,7 @@ httpolyglot
             cert: fs.readFileSync("server.crt"),
         },
         function (req, res) {
-            if (!req.socket.encrypted) {
+            if (!("encrypted" in req.socket)) {
                 const host = req.headers["host"];
                 const originurl = req.url || "";
                 const tourl = new URL(originurl, "https://" + host);
