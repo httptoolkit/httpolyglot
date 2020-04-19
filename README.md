@@ -41,7 +41,7 @@ httpolyglot
 ```javascript
 const httpolyglot = require("@masx200/http-https-spdy-http2-polyglot");
 const fs = require("fs");
-
+const port = 9000;
 httpolyglot
     .createServer(
         {
@@ -58,8 +58,8 @@ httpolyglot
             }
         }
     )
-    .listen(9000, "localhost", function () {
-        console.log("httpolyglot server listening on port 9000");
+    .listen(port, "localhost", function () {
+        console.log("httpolyglot server listening on port " + port);
     });
 ```
 
@@ -69,7 +69,7 @@ httpolyglot
 
 -   **Server** - A class similar to https.Server .
 
--   **createServer**(< _object_ >tlsConfig[, < _function_ >requestListener]) - _Server_ - Creates and returns a new Server instance.
+-   **createServer** - Creates and returns a new Server instance.
 
 # How it Works
 
