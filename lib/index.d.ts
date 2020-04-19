@@ -6,8 +6,5 @@ declare type ServerOptions = http.ServerOptions & https.ServerOptions;
 declare class Server extends net.Server {
     constructor(config: ServerOptions, requestListener: http.RequestListener);
 }
-declare function createServer(
-    config: ServerOptions,
-    requestListener: http.RequestListener
-): Server;
+declare function createServer(config: ServerOptions, requestListener: http.RequestListener): Server;
 export { createServer, Server };

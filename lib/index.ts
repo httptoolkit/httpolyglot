@@ -27,9 +27,6 @@ class Server extends net.Server {
                         serverhttps.emit("connection", socket);
                     } else if (32 < firstByte && firstByte < 127) {
                         serverhttp.emit("connection", socket);
-                    } else {
-                        socket.end();
-                        return;
                     }
 
                     socket.resume();
