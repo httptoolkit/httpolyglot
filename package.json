@@ -26,7 +26,10 @@
         "@types/spdy": "^3.4.4"
     },
     "devDependencies": {
-        "prettier": "^2.0.4"
+        "spdy": "^4.0.2",
+        "prettier": "^2.0.4",
+        "tslib": "^1.11.1",
+        "typescript": "^3.8.3"
     },
     "license": "ISC",
     "repository": {

@@ -28,13 +28,14 @@ function createServer(
         let istls = false;
         const streamhttp = new Duplex();
         const streamtls = new Duplex();
+
         Reflect.set(streamhttp, "write", function (
             chunk: string | Uint8Array,
             encoding: string | undefined,
             callback: ((err?: Error | undefined) => void) | undefined
         ) {
-            debugger;
             if (ishttp) {
+                console.log("http data write", chunk);
                 return socket.write(chunk, encoding, callback);
             } else {
                 callback?.();
@@ -46,8 +47,8 @@ function createServer(
             encoding: string | undefined,
             callback: ((err?: Error | undefined) => void) | undefined
         ) {
-            debugger;
             if (istls) {
+                console.log("tls data write", chunk);
                 return socket.write(chunk, encoding, callback);
             } else {
                 callback?.();
@@ -57,7 +58,6 @@ function createServer(
 
         socket.on("error", function onError() {});
         socket.on("data", (data) => {
-            debugger;
             if (firsthandle) {
                 firsthandle = false;
                 const firstByte = data[0];
@@ -77,9 +77,11 @@ function createServer(
             }
             if (ishttp) {
                 streamhttp.emit("data", data);
+                console.log("http data recv", data);
             }
             if (istls) {
                 streamtls.emit("data", data);
+                console.log("tls data recv", data);
             }
         });
     };
