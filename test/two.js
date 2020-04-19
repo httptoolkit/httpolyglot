@@ -13,7 +13,7 @@ createServer(
         cert: fs.readFileSync(path.join(__dirname, "server.crt")),
     },
     function (req, res) {
-        if (!req.socket) {
+        if (!("encrypted" in req.socket)) {
             const host = req.headers["host"];
             const originurl = req.url || "";
             const tourl = new URL(originurl, "https://" + host);
