@@ -13,8 +13,10 @@ createServer(
         cert: fs.readFileSync(path.join(__dirname, "server.crt")),
     },
     function (req, res) {
+        console.log(req.socket.alpnProtocol);
+
         res.writeHead(200, { "Content-Type": "text/plain" });
-        res.write("alpnProtocol:" + req.socket.alpnProtocol + " Connection!\n");
+        res.write("alpnProtocol:" + req.socket.alpnProtocol + " \n");
         res.end(
             ("encrypted" in req.socket ? "HTTPS" : "HTTP") + " Connection!"
         );
