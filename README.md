@@ -50,7 +50,11 @@ httpolyglot
         },
         function (req, res) {
             if (!req.socket.encrypted) {
-                res.writeHead(301, { Location: "https://localhost:9000" });
+                const host = req.headers["host"];
+                const originurl = req.url;
+                const tourl = new URL(req.url, "https://" + host);
+                tourl.port = String(port);
+                res.writeHead(301, { Location: tourl.href });
                 return res.end();
             } else {
                 res.writeHead(200, { "Content-Type": "text/plain" });
