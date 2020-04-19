@@ -1,29 +1,42 @@
 {
-  "name": "@httptoolkit/httpolyglot",
-  "version": "0.2.0",
-  "author": "Tim Perry <pimterry@gmail.com>",
-  "description": "Serve http and https connections over the same port with node.js",
-  "main": "./lib/index.js",
-  "scripts": {
-    "test": "node test/test.js"
-  },
-  "engines": {
-    "node": ">=8.0.0"
-  },
-  "keywords": [
-    "http",
-    "https",
-    "multiplex",
-    "polyglot"
-  ],
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://github.com/httptoolkit/httpolyglot/raw/master/LICENSE"
-    }
-  ],
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/httptoolkit/httpolyglot.git"
-  }
+    "type": "module",
+    "types": "./lib/index.d.ts",
+    "name": "@masx200/http-https-spdy-http2-polyglot",
+    "version": "1.0.0",
+    "main": "./lib/index.js",
+    "scripts": {
+        "build": "tsc",
+        "test": "node test/test.js",
+        "prettier": "prettier --write *.js *.md *.json ./**/*.js */**.ts"
+    },
+    "engines": {
+        "node": ">=8.0.0"
+    },
+    "peerDependencies": {
+        "spdy": "^4.0.2"
+    },
+    "keywords": [
+        "http",
+        "https",
+        "multiplex",
+        "polyglot"
+    ],
+    "dependencies": {
+        "@types/node": "^13.13.0",
+        "@types/spdy": "^3.4.4"
+    },
+    "devDependencies": {
+        "prettier": "^2.0.4"
+    },
+    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/masx200/http-https-spdy-http2-polyglot.git"
+    },
+    "author": "masx200 <34191203+masx200@users.noreply.github.com>",
+    "bugs": {
+        "url": "https://github.com/masx200/http-https-spdy-http2-polyglot/issues"
+    },
+    "homepage": "https://github.com/masx200/http-https-spdy-http2-polyglot#readme",
+    "description": "Serve http and https and spdy and http2 connections over the same port with node.js"
 }

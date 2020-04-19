@@ -1,81 +1,76 @@
-Description
-===========
+# Description
 
-A module for serving http and https connections over the same port.
+Serve http and https and spdy and http2 connections over the same port with node.js
 
-Forked from the original [`httpolyglot`](https://github.com/mscdex/httpolyglot) to fix various issues required for [HTTP Toolkit](https://httptoolkit.tech), including:
+# Requirements
 
-* Fixing `tlsClientError`: https://github.com/mscdex/httpolyglot/pull/11.
-* Exposing the lost bytes from https://github.com/mscdex/httpolyglot/issues/13 on the socket, as `__httpPeekedData`.
-* Dropping support for old versions of Node (and thereby simplifying the code somewhat)
+-   [node.js](http://nodejs.org/) -- v8.0.0 or newer
 
-Requirements
-============
+# Install
 
-* [node.js](http://nodejs.org/) -- v8.0.0 or newer
+    npm install @masx200/http-https-spdy-http2-polyglot
 
+# Examples
 
-Install
-============
-
-    npm install @httptoolkit/httpolyglot
-
-
-Examples
-========
-
-* Simple usage:
+-   Simple usage:
 
 ```javascript
-const httpolyglot = require('@httptoolkit/httpolyglot');
-const fs = require('fs');
+const httpolyglot = require("@masx200/http-https-spdy-http2-polyglot");
+const fs = require("fs");
 
-httpolyglot.createServer({
-  key: fs.readFileSync('server.key'),
-  cert: fs.readFileSync('server.crt')
-}, function(req, res) {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end((req.socket.encrypted ? 'HTTPS' : 'HTTP') + ' Connection!');
-}).listen(9000, 'localhost', function() {
-  console.log('httpolyglot server listening on port 9000');
-  // visit http://localhost:9000 and https://localhost:9000 in your browser ...
-});
+httpolyglot
+    .createServer(
+        {
+            key: fs.readFileSync("server.key"),
+            cert: fs.readFileSync("server.crt"),
+        },
+        function (req, res) {
+            res.writeHead(200, { "Content-Type": "text/plain" });
+            res.end((req.socket.encrypted ? "HTTPS" : "HTTP") + " Connection!");
+        }
+    )
+    .listen(9000, "localhost", function () {
+        console.log("httpolyglot server listening on port 9000");
+    });
 ```
 
-* Simple redirect of all http connections to https:
+-   Simple redirect of all http connections to https:
 
 ```javascript
-const httpolyglot = require('@httptoolkit/httpolyglot');
-const fs = require('fs');
+const httpolyglot = require("@masx200/http-https-spdy-http2-polyglot");
+const fs = require("fs");
 
-httpolyglot.createServer({
-  key: fs.readFileSync('server.key'),
-  cert: fs.readFileSync('server.crt')
-}, function(req, res) {
-  if (!req.socket.encrypted) {
-    res.writeHead(301, { 'Location': 'https://localhost:9000' });
-    return res.end();
-  }
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Welcome, HTTPS user!');
-}).listen(9000, 'localhost', function() {
-  console.log('httpolyglot server listening on port 9000');
-  // visit http://localhost:9000 and https://localhost:9000 in your browser ...
-});
+httpolyglot
+    .createServer(
+        {
+            key: fs.readFileSync("server.key"),
+            cert: fs.readFileSync("server.crt"),
+        },
+        function (req, res) {
+            if (!req.socket.encrypted) {
+                res.writeHead(301, { Location: "https://localhost:9000" });
+                return res.end();
+            } else {
+                res.writeHead(200, { "Content-Type": "text/plain" });
+                res.end("Welcome, HTTPS user!");
+            }
+        }
+    )
+    .listen(9000, "localhost", function () {
+        console.log("httpolyglot server listening on port 9000");
+    });
 ```
 
+# API
 
-API
-===
+## Exports
 
-Exports
--------
+-   **Server** - A class similar to https.Server (except instances have `setTimeout()` from http.Server).
 
-* **Server** - A class similar to https.Server (except instances have `setTimeout()` from http.Server).
+-   **createServer**(< _object_ >tlsConfig[, < _function_ >requestListener]) - _Server_ - Creates and returns a new Server instance.
 
-* **createServer**(< _object_ >tlsConfig[, < _function_ >requestListener]) - _Server_ - Creates and returns a new Server instance.
+# How it Works
 
-How it Works
-============
+https://github.com/lvgithub/blog/blob/master/http_and_https_over_same_port/README.MD
 
 TLS and HTTP connections are easy to distinguish based on the first byte sent by clients trying to connect. See [this comment](https://github.com/mscdex/httpolyglot/issues/3#issuecomment-173680155) for more information.
