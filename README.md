@@ -71,8 +71,6 @@ httpolyglot
 
 ## Exports
 
--   **Server** - A class similar to https.Server .
-
 -   **createServer** - Creates and returns a new Server instance.
 
 # How it Works
