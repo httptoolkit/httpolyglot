@@ -3,6 +3,8 @@ import http from "http";
 import https from "https";
 import net from "net";
 import spdy from "spdy";
+import stream from "stream";
+
 type ServerOptions = https.ServerOptions;
 
 function createServer(
@@ -22,21 +24,43 @@ function createServer(
     );
 
     const connectionListener = function (socket: net.Socket) {
-        socket.on("error", function onError() {});
-        socket.once("data", (data) => {
-            socket.pause();
+        let firsthandle = true;
+        let ishttp = false;
+        let istls = false;
+        const streamhttp = new stream.Duplex();
+        const streamtls = new stream.Duplex();
 
-            const firstByte = data[0];
-            socket.unshift(data);
-
-            if (firstByte === 22) {
-                onconnection.forEach((listener) => {
-                    listener.call(serverspdy, socket);
-                });
-            } else if (32 < firstByte && firstByte < 127) {
-                serverhttp.emit("connection", socket);
+        streamhttp.on("data", (data) => {
+            if (ishttp) {
+                socket.write(data);
             }
-            socket.resume();
+        });
+        streamtls.on("data", (data) => {
+            if (istls) {
+                socket.write(data);
+            }
+        });
+        serverhttp.emit("connection", streamhttp);
+        onconnection.forEach((listeners) =>
+            listeners.call(serverspdy, streamtls)
+        );
+        socket.on("error", function onError() {});
+        socket.on("data", (data) => {
+            if (firsthandle) {
+                firsthandle = false;
+                const firstByte = data[0];
+                if (firstByte === 22) {
+                    istls = true;
+                } else if (32 < firstByte && firstByte < 127) {
+                    ishttp = true;
+                }
+            }
+            if (ishttp) {
+                streamhttp.write(data);
+            }
+            if (istls) {
+                streamtls.write(data);
+            }
         });
     };
     events.EventEmitter.prototype.on.call(
