@@ -28,7 +28,7 @@ function createServer(
         socket: net.Socket,
         head: Buffer
     ) => void = notfoundupgradelistener
-) {
+): https.Server {
     if (!(typeof config === "object")) {
         throw new Error("options are required!");
     }
