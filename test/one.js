@@ -12,14 +12,17 @@ createServer(
         key: fs.readFileSync(path.join(__dirname, "server.key")),
         cert: fs.readFileSync(path.join(__dirname, "server.crt")),
     },
-    function (req, res) {
-        console.log(req.socket.alpnProtocol);
+   async function (req, res) {
+        // console.log(req.socket.alpnProtocol);
 
         res.writeHead(200, { "Content-Type": "text/plain" });
-        res.write("alpnProtocol:" + req.socket.alpnProtocol + " \n");
-        res.end(
-            ("encrypted" in req.socket ? "HTTPS" : "HTTP") + " Connection!"
+        res.write(
+            ("encrypted" in req.socket ? "HTTPS" : "HTTP") + " Connection!\n"
         );
+        res.write("alpnProtocol:" + req.socket.alpnProtocol + " \n");
+        res.end()
+        res.destroy()
+       
     }
 ).listen(port, "localhost", function () {
     console.log("httpolyglot server listening on port " + port);
