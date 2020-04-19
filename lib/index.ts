@@ -2,8 +2,13 @@ import http from "http";
 import https from "https";
 import net from "net";
 import spdy from "spdy";
-
-type ServerOptions = https.ServerOptions;
+export type RequestListener = http.RequestListener;
+export type UpgradeListener = (
+    req: http.IncomingMessage,
+    socket: net.Socket,
+    head: Buffer
+) => void;
+export type ServerOptions = https.ServerOptions;
 const notfoundrequestlistener = function (
     req: http.IncomingMessage,
     res: http.ServerResponse
@@ -22,12 +27,8 @@ const notfoundupgradelistener = function (
 };
 function createServer(
     config: ServerOptions,
-    requestListener: http.RequestListener = notfoundrequestlistener,
-    upgradeListener: (
-        req: http.IncomingMessage,
-        socket: net.Socket,
-        head: Buffer
-    ) => void = notfoundupgradelistener
+    requestListener: RequestListener = notfoundrequestlistener,
+    upgradeListener: UpgradeListener = notfoundupgradelistener
 ): https.Server {
     if (!(typeof config === "object")) {
         throw new Error("options are required!");
