@@ -51,8 +51,8 @@ httpolyglot
         function (req, res) {
             if (!req.socket.encrypted) {
                 const host = req.headers["host"];
-                const originurl = req.url;
-                const tourl = new URL(req.url, "https://" + host);
+                const originurl = req.url || "";
+                const tourl = new URL(originurl, "https://" + host);
                 tourl.port = String(port);
                 res.writeHead(301, { Location: tourl.href });
                 return res.end();
