@@ -14,6 +14,10 @@ yarn add spdy  @masx200/http-https-spdy-http2-polyglot
 
 # Examples
 
+-   Websocket usage
+
+https://github.com/masx200/http-https-spdy-http2-polyglot/blob/master/test/three.js
+
 -   Simple usage:
 
 ```javascript
