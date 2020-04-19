@@ -3,7 +3,6 @@ import http from "http";
 import https from "https";
 import net from "net";
 import spdy from "spdy";
-import stream from "stream";
 
 type ServerOptions = https.ServerOptions;
 
@@ -27,17 +26,27 @@ function createServer(
         let firsthandle = true;
         let ishttp = false;
         let istls = false;
-        const streamhttp = new stream.Duplex();
-        const streamtls = new stream.Duplex();
+        const streamhttp = new net.Socket();
+        const streamtls = new net.Socket();
 
         streamhttp.on("data", (data) => {
             if (ishttp) {
                 socket.write(data);
             }
         });
+        streamhttp.on("end", () => {
+            if (ishttp) {
+                socket.end();
+            }
+        });
         streamtls.on("data", (data) => {
             if (istls) {
                 socket.write(data);
+            }
+        });
+        streamtls.on("end", () => {
+            if (istls) {
+                socket.end();
             }
         });
         serverhttp.emit("connection", streamhttp);
@@ -72,3 +81,4 @@ function createServer(
     return serverspdy;
 }
 export { createServer };
+
