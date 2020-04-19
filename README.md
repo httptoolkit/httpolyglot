@@ -19,7 +19,7 @@ yarn add spdy  @masx200/http-https-spdy-http2-polyglot
 ```javascript
 const httpolyglot = require("@masx200/http-https-spdy-http2-polyglot");
 const fs = require("fs");
-
+const port = 9000;
 httpolyglot
     .createServer(
         {
@@ -31,8 +31,8 @@ httpolyglot
             res.end((req.socket.encrypted ? "HTTPS" : "HTTP") + " Connection!");
         }
     )
-    .listen(9000, "localhost", function () {
-        console.log("httpolyglot server listening on port 9000");
+    .listen(port, "localhost", function () {
+        console.log("httpolyglot server listening on port " + port);
     });
 ```
 
