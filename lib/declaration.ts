@@ -35,6 +35,7 @@ export const requestNotFound = function (
     res: ServerResponse
 ) {
     res.statusCode = 404;
+    res.setHeader("content-type", "text/html");
     res.write("404");
     res.end();
 };
