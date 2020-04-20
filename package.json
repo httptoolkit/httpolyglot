@@ -5,6 +5,7 @@
     "version": "1.0.0",
     "main": "./lib/index.js",
     "scripts": {
+        "debug": "node --inspect test/test.js",
         "build": "tsc",
         "test": "node test/test.js",
         "prettier": "prettier --write  *.md *.json ./**/*.js */**.ts"

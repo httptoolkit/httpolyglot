@@ -7,9 +7,15 @@ import tls from "tls";
 export interface ServerRequest extends http.IncomingMessage {
     socket: Socket;
 }
-
+interface PushOptions {
+    status?: number;
+    method?: string;
+    request?: any;
+    response?: any;
+}
 export interface ServerResponse extends http.ServerResponse {
     socket: Socket;
+    push?: (filename: string, options: PushOptions) => any;
 }
 export type Socket = Partial<tls.TLSSocket> & net.Socket;
 export type RequestListener = (req: ServerRequest, res: ServerResponse) => void;
