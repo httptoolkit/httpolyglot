@@ -4,7 +4,7 @@ Serve http and https and spdy and http2 connections over the same port with node
 
 # Requirements
 
--   [node.js](http://nodejs.org/) -- v13.0.0 or newer
+-   [node.js](http://nodejs.org/) -- v12.0.0 or newer
 
 # Install
 
