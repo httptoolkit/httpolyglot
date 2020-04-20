@@ -19,10 +19,22 @@ const server = createServer(
         key: fs.readFileSync(path.join(__dirname, "server.key")),
         cert: fs.readFileSync(path.join(__dirname, "server.crt")),
     },
-    function (req, res) {
-        res.writeHead(200, { "Content-Type": "text/html" });
+    async function (req, res) {
+        if (req.url === "/") {
+            res.writeHead(200, { "Content-Type": "text/html" });
 
-        res.end("websocket");
+            res.end("websocket<script type='module' src='./index.js'></script>");
+        } else if (req.url === "/index.js") {
+            res.writeHead(200, { "Content-Type": "text/javascript" });
+            const jsfile = await fs.promises.readFile(
+                path.join(__dirname, "index.js")
+            );
+            res.write(jsfile);
+            res.end();
+        } else {
+            res.statusCode = 404;
+            res.end();
+        }
     },
     function (req, socket, head) {
         wsServer.handleUpgrade(req, socket, head, function done(ws) {
