@@ -20,7 +20,7 @@ const server = createServer(
             const originurl = req.url || "";
             const tourl = new URL(originurl, "https://" + host);
             tourl.port = String(port);
-            res.writeHead(302, { Location: tourl.href });
+            res.writeHead(302, { Location: tourl.href,"Content-Type": "text/html" });
             res.write("302");
             return res.end();
         }
