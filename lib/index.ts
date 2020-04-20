@@ -4,7 +4,7 @@ import net from "net";
 import spdy from "spdy";
 import tls from "tls";
 import stream from "stream";
-
+import {onlyonelistener}from "./onlyonelistener.js"
 export interface ServerRequest extends http.IncomingMessage {
     socket: Socket;
 }
@@ -16,7 +16,7 @@ interface PushOptions {
 }
 export interface ServerResponse extends http.ServerResponse {
     socket: Socket;
-    push?: (pathname: string, options: PushOptions) => stream.Writable;
+    push?: (pathname: string, options?: PushOptions) => stream.Writable;
 }
 export type Socket = Partial<tls.TLSSocket> & net.Socket;
 export type RequestListener = (req: ServerRequest, res: ServerResponse) => void;
@@ -132,6 +132,6 @@ socket.on("error", function () {});
         /* 测试发现不能使用on data事件,会收不到响应,多次数据会漏掉 */
     }
 
-    return serverspdy;
+    return onlyonelistener(serverspdy);
 }
 export { createServer };
