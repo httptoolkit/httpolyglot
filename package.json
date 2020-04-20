@@ -7,9 +7,8 @@
     "scripts": {
         "fetch": "node --experimental-modules test/fetch.js",
         "open": "node --experimental-modules test/open.js",
-        "debug": "node --inspect test/test.js",
         "build": "tsc",
-        "test": "node --experimental-modules test/test.js",
+        "serve": "node --experimental-modules test/test.js",
         "prettier": "prettier --write  *.md *.json ./**/*.js */**.ts"
     },
     "engines": {
