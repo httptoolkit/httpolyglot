@@ -7,9 +7,11 @@ import { dirname } from "path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-createServer({
+const server = createServer({
     key: fs.readFileSync(path.join(__dirname, "server.key")),
     cert: fs.readFileSync(path.join(__dirname, "server.crt")),
-}).listen(port, "localhost", function () {
+});
+
+server.listen(port, "localhost", function () {
     console.log("httpolyglot server listening on port " + port);
 });
