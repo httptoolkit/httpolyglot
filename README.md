@@ -42,22 +42,21 @@ https://github.com/masx200/http-https-spdy-http2-polyglot/blob/master/test/webso
 const httpolyglot = require("@masx200/http-https-spdy-http2-polyglot");
 const fs = require("fs");
 const port = 9000;
-httpolyglot
-    .createServer(
-        {
-            key: fs.readFileSync("server.key"),
-            cert: fs.readFileSync("server.crt"),
-        },
-        function (req, res) {
-            res.writeHead(200, { "Content-Type": "text/plain" });
-            res.end(
-                ("encrypted" in req.socket ? "HTTPS" : "HTTP") + " Connection!"
-            );
-        }
-    )
-    .listen(port, "localhost", function () {
-        console.log("httpolyglot server listening on port " + port);
-    });
+const server = httpolyglot.createServer(
+    {
+        key: fs.readFileSync("server.key"),
+        cert: fs.readFileSync("server.crt"),
+    },
+    function (req, res) {
+        res.writeHead(200, { "Content-Type": "text/plain" });
+        res.end(
+            ("encrypted" in req.socket ? "HTTPS" : "HTTP") + " Connection!"
+        );
+    }
+);
+server.listen(port, "localhost", function () {
+    console.log("httpolyglot server listening on port " + port);
+});
 ```
 
 -   redirect all http connections to https:
@@ -66,30 +65,33 @@ httpolyglot
 const httpolyglot = require("@masx200/http-https-spdy-http2-polyglot");
 const fs = require("fs");
 const port = 9000;
-httpolyglot
-    .createServer(
-        {
-            key: fs.readFileSync("server.key"),
-            cert: fs.readFileSync("server.crt"),
-        },
-        function (req, res) {
-            if (!("encrypted" in req.socket)) {
-                const host = req.headers["host"];
-                const originurl = req.url || "";
-                const tourl = new URL(originurl, "https://" + host);
-                tourl.port = String(port);
-                res.writeHead(302, { Location: tourl.href });
-                return res.end();
-            } else {
-                res.writeHead(200, { "Content-Type": "text/plain" });
-                res.end("Welcome, HTTPS user!");
-            }
+const server = httpolyglot.createServer(
+    {
+        key: fs.readFileSync("server.key"),
+        cert: fs.readFileSync("server.crt"),
+    },
+    function (req, res) {
+        if (!("encrypted" in req.socket)) {
+            const host = req.headers["host"];
+            const originurl = req.url || "";
+            const tourl = new URL(originurl, "https://" + host);
+            tourl.port = String(port);
+            res.writeHead(302, { Location: tourl.href });
+            return res.end();
+        } else {
+            res.writeHead(200, { "Content-Type": "text/plain" });
+            res.end("Welcome, HTTPS user!");
         }
-    )
-    .listen(port, "localhost", function () {
-        console.log("httpolyglot server listening on port " + port);
-    });
+    }
+);
+server.listen(port, "localhost", function () {
+    console.log("httpolyglot server listening on port " + port);
+});
 ```
+
+-   create a "404 not found" server
+
+https://github.com/masx200/http-https-spdy-http2-polyglot/blob/master/test/notfound.js
 
 # API
 
