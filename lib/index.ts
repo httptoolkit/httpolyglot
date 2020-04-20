@@ -3,6 +3,7 @@ import https from "https";
 import net from "net";
 import spdy from "spdy";
 import tls from "tls";
+import stream from "stream";
 
 export interface ServerRequest extends http.IncomingMessage {
     socket: Socket;
@@ -10,12 +11,12 @@ export interface ServerRequest extends http.IncomingMessage {
 interface PushOptions {
     status?: number;
     method?: string;
-    request?: any;
-    response?: any;
+    request?: http.OutgoingHttpHeaders;
+    response?: http.OutgoingHttpHeaders;
 }
 export interface ServerResponse extends http.ServerResponse {
     socket: Socket;
-    push?: (filename: string, options: PushOptions) => any;
+    push?: (filename: string, options: PushOptions) => stream.Writable;
 }
 export type Socket = Partial<tls.TLSSocket> & net.Socket;
 export type RequestListener = (req: ServerRequest, res: ServerResponse) => void;
