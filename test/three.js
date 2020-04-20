@@ -6,9 +6,9 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import ws from "ws";
 const wsServer = new ws.Server({ noServer: true });
-wsServer.on("connection", (socket, req) => {
-    socket.send(JSON.stringify(req.headers));
-    socket.send(
+wsServer.on("connection", (websocket, req) => {
+    websocket.send(JSON.stringify(req.headers));
+    websocket.send(
         ("encrypted" in req.socket ? "HTTPS" : "HTTP") + " Connection!"
     );
 });
