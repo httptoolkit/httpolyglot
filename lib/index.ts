@@ -90,8 +90,13 @@ function createServer(
     serverspdy.addListener("connection", connectionListener);
 
     function connectionListener(socket: net.Socket) {
-        socket.on("error", function onError() {});
-
+        //如果没有error监听器就添加error 监听器
+if(
+!socket.
+listeners("error").length
+){
+socket.on("error", function () {});
+}
         //   let ishttp = false;
         //     let istls = false;
 
