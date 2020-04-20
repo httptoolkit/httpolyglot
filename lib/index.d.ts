@@ -16,7 +16,7 @@ interface PushOptions {
 }
 export interface ServerResponse extends http.ServerResponse {
     socket: Socket;
-    push?: (filename: string, options: PushOptions) => stream.Writable;
+    push?: (pathname: string, options: PushOptions) => stream.Writable;
 }
 export declare type Socket = Partial<tls.TLSSocket> & net.Socket;
 export declare type RequestListener = (req: ServerRequest, res: ServerResponse) => void;
