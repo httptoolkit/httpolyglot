@@ -12,6 +12,20 @@ Serve http and https and spdy and http2 connections over the same port with node
 yarn add spdy  @masx200/http-https-spdy-http2-polyglot
 ```
 
+# Connection protocol judgment
+
+Determine if the connection is tls.
+
+```js
+const istls = "encrypted" in req.socket;
+```
+
+Determine if the connection is http/2.
+
+```js
+const ishttp2 = "h2" === req.socket.alpnProtocol;
+```
+
 # Examples
 
 -   http2 server push
@@ -22,7 +36,7 @@ https://github.com/masx200/http-https-spdy-http2-polyglot/blob/master/test/push.
 
 https://github.com/masx200/http-https-spdy-http2-polyglot/blob/master/test/websocket.js
 
--   Simple Determine if the connection is https.
+-   Simple Determine if the connection is tls.
 
 ```javascript
 const httpolyglot = require("@masx200/http-https-spdy-http2-polyglot");
