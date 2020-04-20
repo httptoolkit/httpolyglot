@@ -18,6 +18,8 @@ function createServer(
     if (!(config && typeof config === "object")) {
         throw new Error("options are required!");
     }
+    requestListener = requestListener || requestNotFound;
+    upgradeListener = upgradeListener || upgradeNotFound;
 
     const servernet = net.createServer(config);
     const serverhttp = http.createServer(config);
