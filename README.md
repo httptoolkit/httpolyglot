@@ -98,3 +98,29 @@ TLS and HTTP connections are easy to distinguish based on the first byte sent by
 https://github.com/mscdex/httpolyglot/issues/3#issuecomment-173680155
 
 https://github.com/httptoolkit/httpolyglot/blob/master/lib/index.js
+
+# test
+
+```powershell
+yarn install
+```
+
+```powershell
+./generate-ssl-cert.ps1
+```
+
+```powershell
+yarn serve
+```
+
+```powershell
+yarn fetch1
+```
+
+```powershell
+yarn fetch2
+```
+
+```powershell
+yarn open
+```
