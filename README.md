@@ -32,7 +32,7 @@ const ishttp2 = "h2" === req.socket.alpnProtocol;
 
 https://github.com/masx200/http-https-spdy-http2-polyglot/blob/master/test/push.js
 
--   Websocket
+-   Websocket server
 
 https://github.com/masx200/http-https-spdy-http2-polyglot/blob/master/test/websocket.js
 
@@ -112,6 +112,8 @@ declare function createServer(
 The `requestListener` is a function which is automatically added to the 'request' event
 
 The `upgradeListener` is a function which is automatically added to the 'upgrade' event
+
+If no "requestListener" or "upgradeListener" is provided, the default "404 not found" listener will be used instead.
 
 # How it Works
 
