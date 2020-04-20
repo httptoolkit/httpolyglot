@@ -1,10 +1,8 @@
 let url = new URL(location.href);
 if (url.protocol === "https:") {
     url.protocol = "wss:";
-} else {
-    if (url.protocol === "http:") {
-        url.protocol = "ws:";
-    }
+} else if (url.protocol === "http:") {
+    url.protocol = "ws:";
 }
 
 let socket = new WebSocket(url.href);
