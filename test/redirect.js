@@ -1,17 +1,15 @@
-import { createServer } from "../lib/index.js";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
 import { dirname } from "path";
-
+import { fileURLToPath } from "url";
+import { createServer } from "../lib/index.js";
+import { cert, key } from "./key-cert.js";
 // @ts-ignore
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const port = 9001;
 const server = createServer(
     {
-        key: fs.readFileSync(path.join(__dirname, "server.key.pem")),
-        cert: fs.readFileSync(path.join(__dirname, "server.crt.pem")),
+        key,
+        cert,
     },
     function (req, res) {
         if ("encrypted" in req.socket) {

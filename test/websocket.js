@@ -5,6 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import ws from "ws";
+import { cert, key } from "./key-cert.js";
 const wsServer = new ws.Server({ noServer: true });
 wsServer.on("connection", (websocket, req) => {
     websocket.send(JSON.stringify(req.headers));
@@ -17,8 +18,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const server = createServer(
     {
-        key: fs.readFileSync(path.join(__dirname, "server.key.pem")),
-        cert: fs.readFileSync(path.join(__dirname, "server.crt.pem")),
+        key,
+        cert,
     },
     async function (req, res) {
         if (req.url === "/") {
