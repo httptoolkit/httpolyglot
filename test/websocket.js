@@ -12,12 +12,13 @@ wsServer.on("connection", (websocket, req) => {
         ("encrypted" in req.socket ? "HTTPS" : "HTTP") + " Connection!"
     );
 });
+// @ts-ignore
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const server = createServer(
     {
-        key: fs.readFileSync(path.join(__dirname, "server.key")),
-        cert: fs.readFileSync(path.join(__dirname, "server.crt")),
+        key: fs.readFileSync(path.join(__dirname, "server.key.pem")),
+        cert: fs.readFileSync(path.join(__dirname, "server.crt.pem")),
     },
     async function (req, res) {
         if (req.url === "/") {

@@ -5,12 +5,13 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 
+// @ts-ignore
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const server = createServer(
     {
-        key: fs.readFileSync(path.join(__dirname, "server.key")),
-        cert: fs.readFileSync(path.join(__dirname, "server.crt")),
+        key: fs.readFileSync(path.join(__dirname, "server.key.pem")),
+        cert: fs.readFileSync(path.join(__dirname, "server.crt.pem")),
     },
     async function (req, res) {
         res.writeHead(200, { "Content-Type": "text/html" });

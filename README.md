@@ -44,8 +44,8 @@ const fs = require("fs");
 const port = 9000;
 const server = httpolyglot.createServer(
     {
-        key: fs.readFileSync("server.key"),
-        cert: fs.readFileSync("server.crt"),
+        key: fs.readFileSync("server.key.pem"),
+        cert: fs.readFileSync("server.crt.pem"),
     },
     function (req, res) {
         res.writeHead(200, { "Content-Type": "text/plain" });
@@ -67,8 +67,8 @@ const fs = require("fs");
 const port = 9000;
 const server = httpolyglot.createServer(
     {
-        key: fs.readFileSync("server.key"),
-        cert: fs.readFileSync("server.crt"),
+        key: fs.readFileSync("server.key.pem"),
+        cert: fs.readFileSync("server.crt.pem"),
     },
     function (req, res) {
         if (!("encrypted" in req.socket)) {
