@@ -2,6 +2,7 @@ import https from "https";
 import fetch1 from "node-fetch";
 import { cert } from "./key-cert.js";
 import { urls } from "./urls.js";
+import { logjson } from "./logjson.js";
 
 process.on("unhandledRejection", console.error);
 
@@ -29,9 +30,9 @@ const fetch =
             .map((url) => {
                 return fetch(url, {
                     redirect: "manual",
-                }).then((r) => Promise.all([r, r.text()]));
+                }).then((r) => Promise.all([r.status,[...r.headers], r.text()]));
             })
             .flat(1 / 0)
-    ).then(console.log);
+    ).then(logjson);
     // @ts-ignore
 })(fetch);
