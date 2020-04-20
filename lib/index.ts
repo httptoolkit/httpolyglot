@@ -2,17 +2,18 @@ import http from "http";
 import net from "net";
 import spdy from "spdy";
 import {
-    notfoundrequestlistener,
-    notfoundupgradelistener,
+    requestNotFound,
+    upgradeNotFound,
     RequestListener,
     ServerOptions,
     UpgradeListener,
 } from "./declaration.js";
-
+export * from "./declaration.js";
+export { createServer };
 function createServer(
     config: ServerOptions,
-    requestListener: RequestListener = notfoundrequestlistener,
-    upgradeListener: UpgradeListener = notfoundupgradelistener
+    requestListener: RequestListener = requestNotFound,
+    upgradeListener: UpgradeListener = upgradeNotFound
 ): net.Server {
     if (!(typeof config === "object")) {
         throw new Error("options are required!");
@@ -97,4 +98,3 @@ function createServer(
 
     return servernet;
 }
-export { createServer };

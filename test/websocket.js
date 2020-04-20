@@ -23,7 +23,9 @@ const server = createServer(
         if (req.url === "/") {
             res.writeHead(200, { "Content-Type": "text/html" });
 
-            res.end("websocket<script type='module' src='./index.js'></script>");
+            res.end(
+                "websocket<script type='module' src='./index.js'></script>"
+            );
         } else if (req.url === "/index.js") {
             res.writeHead(200, { "Content-Type": "text/javascript" });
             const jsfile = await fs.promises.readFile(

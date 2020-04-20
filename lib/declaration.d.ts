@@ -34,11 +34,11 @@ export declare type ServerOptions = spdy.ServerOptions & {
 } & http.ServerOptions &
     tls.TlsOptions &
     https.ServerOptions;
-export declare const notfoundrequestlistener: (
+export declare const requestNotFound: (
     req: ServerRequest,
     res: ServerResponse
 ) => void;
-export declare const notfoundupgradelistener: (
+export declare const upgradeNotFound: (
     req: ServerRequest,
     socket: Socket,
     head: Buffer

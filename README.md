@@ -104,7 +104,7 @@ declare function createServer(
     config: ServerOptions,
     requestListener?: RequestListener,
     upgradeListener?: UpgradeListener
-): https.Server;
+): net.Server;
 ```
 
 The `requestListener` is a function which is automatically added to the 'request' event

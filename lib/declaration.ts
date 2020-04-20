@@ -30,7 +30,7 @@ export type ServerOptions = spdy.ServerOptions & {
 } & http.ServerOptions &
     tls.TlsOptions &
     https.ServerOptions;
-export const notfoundrequestlistener = function (
+export const requestNotFound = function (
     req: ServerRequest,
     res: ServerResponse
 ) {
@@ -38,7 +38,7 @@ export const notfoundrequestlistener = function (
     res.write("404");
     res.end();
 };
-export const notfoundupgradelistener = function (
+export const upgradeNotFound = function (
     req: ServerRequest,
     socket: Socket,
     head: Buffer
