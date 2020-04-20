@@ -14,11 +14,17 @@ yarn add spdy  @masx200/http-https-spdy-http2-polyglot
 
 # Examples
 
--   Websocket usage
 
-https://github.com/masx200/http-https-spdy-http2-polyglot/blob/master/test/three.js
+-   http2 server push  
 
--   Simple usage:
+https://github.com/masx200/http-https-spdy-http2-polyglot/blob/master/test/push.js
+
+
+-   Websocket 
+
+https://github.com/masx200/http-https-spdy-http2-polyglot/blob/master/test/websocket.js
+
+-   Simple
 
 ```javascript
 const httpolyglot = require("@masx200/http-https-spdy-http2-polyglot");
@@ -42,7 +48,7 @@ httpolyglot
     });
 ```
 
--   Simple redirect of all http connections to https:
+-   redirect all http connections to https:
 
 ```javascript
 const httpolyglot = require("@masx200/http-https-spdy-http2-polyglot");

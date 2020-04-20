@@ -13,25 +13,33 @@ const server = createServer(
         cert: fs.readFileSync(path.join(__dirname, "server.crt")),
     },
     (req, res) => {
-        res.writeHead(200, { "Content-Type": "text/html" });
-        if (res.push) {
-            var stream = res.push("/main.js", {
-                status: 200, // optional
-                method: "GET", // optional
-                request: {
-                    accept: "*/*",
-                },
-                response: {
-                    "content-type": "application/javascript",
-                },
-            });
-            stream.on("error", function (e) {
-                console.log(e);
-            });
-            stream.end('alert("hello from push stream!");');
-        }
+        if (req.url == "/main.js") {
+            res.statusCode = 200;
+            res.setHeader("content-type", "application/javascript");
+            res.end('alert("not from push stream")');
+            return;
+        } else {
+            res.writeHead(200, { "Content-Type": "text/html" });
 
-        res.end('push<script src="/main.js"></script>');
+            if (res.push) {
+                var stream = res.push("/main.js", {
+                    status: 200, // optional
+                    method: "GET", // optional
+                    request: {
+                        accept: "*/*",
+                    },
+                    response: {
+                        "content-type": "application/javascript",
+                    },
+                });
+                stream.on("error", function (e) {
+                    console.log(e);
+                });
+                stream.end('alert("hello from push stream!");');
+            }
+
+            res.end('push<script src="/main.js"></script>');
+        }
     }
 );
 server.listen(port, "localhost", function () {
