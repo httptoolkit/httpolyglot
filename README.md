@@ -14,13 +14,11 @@ yarn add spdy  @masx200/http-https-spdy-http2-polyglot
 
 # Examples
 
-
--   http2 server push  
+-   http2 server push
 
 https://github.com/masx200/http-https-spdy-http2-polyglot/blob/master/test/push.js
 
-
--   Websocket 
+-   Websocket
 
 https://github.com/masx200/http-https-spdy-http2-polyglot/blob/master/test/websocket.js
 
@@ -94,6 +92,10 @@ declare function createServer(
     upgradeListener?: UpgradeListener
 ): https.Server;
 ```
+
+The requestListener is a function which is automatically added to the 'request' event
+
+The upgradeListener is a function which is automatically added to the 'upgrade' event
 
 # How it Works
 
