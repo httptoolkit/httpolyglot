@@ -7,7 +7,7 @@
     "scripts": {
         "debug": "node --inspect test/test.js",
         "build": "tsc",
-        "test": "node test/test.js",
+        "test": "node --experimental-modules test/test.js",
         "prettier": "prettier --write  *.md *.json ./**/*.js */**.ts"
     },
     "engines": {
