@@ -2,26 +2,20 @@ import http from "http";
 import https from "https";
 import net from "net";
 import spdy from "spdy";
-import tls from "tls"
+import tls from "tls";
 
-
-
-
-export interface ServerRequest extends ServerRequest{
-
-socket:Socket
+export interface ServerRequest extends http.IncomingMessage {
+    socket: Socket;
 }
 
-export interface ServerResponse extends ServerResponse{
-
-socket:Socket
-
+export interface ServerResponse extends http.ServerResponse {
+    socket: Socket;
 }
-export type Socket=tls.TLSSocket|net.Socket
-export type RequestListener = (req:ServerRequest,res:ServerResponse)=>void;
+export type Socket = tls.TLSSocket | net.Socket;
+export type RequestListener = (req: ServerRequest, res: ServerResponse) => void;
 export type UpgradeListener = (
     req: ServerRequest,
-    socket:Socket,
+    socket: Socket,
     head: Buffer
 ) => void;
 export type ServerOptions = https.ServerOptions;
@@ -30,12 +24,12 @@ const notfoundrequestlistener = function (
     res: ServerResponse
 ) {
     res.statusCode = 404;
-    
+
     res.end();
 };
 const notfoundupgradelistener = function (
     req: ServerRequest,
-    socket:Socket,
+    socket: Socket,
     head: Buffer
 ) {
     socket.write(`HTTP/1.1 404 Not Found\r\nConnection: keep-alive\r\n\r\n`);
@@ -61,28 +55,28 @@ function createServer(
     });
     serverhttp.addListener(
         "upgrade",
-        (req: ServerRequest, socket:Socket, head: Buffer) => {
+        (req: ServerRequest, socket: Socket, head: Buffer) => {
             serverspdy.emit("upgrade", req, socket, head);
         }
     );
     serverspdy.addListener("upgrade", upgradeListener);
     const onconnection = serverspdy.listeners("connection");
     serverspdy.removeAllListeners("connection");
-    function handletls(socket:net.Socket) {
+    function handletls(socket: net.Socket) {
         onconnection.forEach((listeners: Function) =>
             Reflect.apply(listeners, serverspdy, [socket])
         );
     }
-    function handlehttp(socket:net.Socket) {
+    function handlehttp(socket: net.Socket) {
         serverhttp.emit("connection", socket);
     }
     serverspdy.addListener("connection", connectionListener);
 
-    function connectionListener(socket:net.Socket) {
+    function connectionListener(socket: net.Socket) {
         socket.on("error", function onError() {});
 
-     //   let ishttp = false;
-   //     let istls = false;
+        //   let ishttp = false;
+        //     let istls = false;
 
         const data = socket.read(1);
         /* https://github.com/httptoolkit/httpolyglot/blob/master/lib/index.js */
@@ -94,22 +88,21 @@ function createServer(
             const firstByte = data[0];
             socket.unshift(data);
             if (firstByte === 22) {
-            	
-            handletls(socket);
-          //      istls = true;
+                handletls(socket);
+                //      istls = true;
             } else if (32 < firstByte && firstByte < 127) {
-             //   ishttp = true;
-             
-             handlehttp(socket);
+                //   ishttp = true;
+
+                handlehttp(socket);
             } else {
                 socket.destroy();
             }
-         //   if (ishttp) {
-                
-        //    }
-      //      if (istls) {
-                
-    //        }
+            //   if (ishttp) {
+
+            //    }
+            //      if (istls) {
+
+            //        }
         }
         /* 测试发现不能使用on data事件,会收不到响应,多次数据会漏掉 */
     }
