@@ -22,7 +22,7 @@ https://github.com/masx200/http-https-spdy-http2-polyglot/blob/master/test/push.
 
 https://github.com/masx200/http-https-spdy-http2-polyglot/blob/master/test/websocket.js
 
--   Simple
+-   Simple Determine if the connection is https.
 
 ```javascript
 const httpolyglot = require("@masx200/http-https-spdy-http2-polyglot");
