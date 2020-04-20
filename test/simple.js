@@ -14,12 +14,14 @@ const server = createServer(
     },
     async function (req, res) {
         res.writeHead(200, { "Content-Type": "text/html" });
-        res.write(
-            ("encrypted" in req.socket ? "HTTPS" : "HTTP") + " Connection!\n"
-        );
-        res.write("alpnProtocol:" + req.socket.alpnProtocol + " \n");
+        const body =
+            ("encrypted" in req.socket ? "HTTPS" : "HTTP") +
+            " Connection!\n" +
+            "alpnProtocol:" +
+            req.socket.alpnProtocol +
+            " \n";
 
-        res.end();
+        res.end(body);
     }
 );
 

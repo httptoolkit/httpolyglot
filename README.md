@@ -61,33 +61,7 @@ server.listen(port, "localhost", function () {
 
 -   redirect all http connections to https:
 
-```javascript
-const httpolyglot = require("@masx200/http-https-spdy-http2-polyglot");
-const fs = require("fs");
-const port = 9000;
-const server = httpolyglot.createServer(
-    {
-        key: fs.readFileSync("server.key.pem"),
-        cert: fs.readFileSync("server.crt.pem"),
-    },
-    function (req, res) {
-        if (!("encrypted" in req.socket)) {
-            const host = req.headers["host"];
-            const originurl = req.url || "";
-            const tourl = new URL(originurl, "https://" + host);
-            tourl.port = String(port);
-            res.writeHead(302, { Location: tourl.href });
-            return res.end();
-        } else {
-            res.writeHead(200, { "Content-Type": "text/plain" });
-            res.end("Welcome, HTTPS user!");
-        }
-    }
-);
-server.listen(port, "localhost", function () {
-    console.log("httpolyglot server listening on port " + port);
-});
-```
+https://github.com/masx200/http-https-spdy-http2-polyglot/blob/master/test/redirect.js
 
 -   create a "404 not found" server
 

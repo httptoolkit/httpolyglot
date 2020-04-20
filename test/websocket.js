@@ -37,6 +37,7 @@ const server = createServer(
             res.end();
         } else {
             res.statusCode = 404;
+            res.write("404");
             res.end();
         }
     },
