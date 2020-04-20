@@ -81,6 +81,14 @@ https://github.com/masx200/http-https-spdy-http2-polyglot/blob/master/lib/index.
 
 -   **createServer** - Creates and returns a new Server instance.
 
+```ts
+declare function createServer(
+    config: ServerOptions,
+    requestListener?: RequestListener,
+    upgradeListener?: UpgradeListener
+): https.Server;
+```
+
 # How it Works
 
 https://github.com/lvgithub/blog/blob/master/http_and_https_over_same_port/README.MD
