@@ -21,6 +21,7 @@ const server = createServer(
             const tourl = new URL(originurl, "https://" + host);
             tourl.port = String(port);
             res.writeHead(302, { Location: tourl.href });
+            res.write("302");
             return res.end();
         }
     }
