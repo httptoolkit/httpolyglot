@@ -54,18 +54,28 @@ function createServer(
     const serverhttp = http.createServer(config);
     //@ts-ignore
     const serverspdy = spdy.createServer(config);
+    serverhttp.addListener(
+        "connect",
+        (request: ServerRequest, socket: Socket, head: Buffer) => {
+            serverspdy.emit("connect", request, socket, head);
+        }
+    );
+    serverhttp.addListener("clientError", (error: Error, socket: Socket) => {
+        serverspdy.emit("clientError", error, socket);
+    });
+    serverhttp.addListener(
+        "upgrade",
+        (request: ServerRequest, socket: Socket, head: Buffer) => {
+            serverspdy.emit("upgrade", request, socket, head);
+        }
+    );
     serverhttp.removeAllListeners("request");
     serverspdy.removeAllListeners("request");
     serverspdy.addListener("request", requestListener);
     serverhttp.addListener("request", (req, res) => {
         serverspdy.emit("request", req, res);
     });
-    serverhttp.addListener(
-        "upgrade",
-        (req: ServerRequest, socket: Socket, head: Buffer) => {
-            serverspdy.emit("upgrade", req, socket, head);
-        }
-    );
+
     serverspdy.addListener("upgrade", upgradeListener);
     const onconnection = serverspdy.listeners("connection");
     serverspdy.removeAllListeners("connection");
