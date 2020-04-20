@@ -11,7 +11,7 @@ export interface ServerRequest extends http.IncomingMessage {
 export interface ServerResponse extends http.ServerResponse {
     socket: Socket;
 }
-export type Socket = tls.TLSSocket | net.Socket;
+export type Socket = Partial<tls.TLSSocket> & net.Socket;
 export type RequestListener = (req: ServerRequest, res: ServerResponse) => void;
 export type UpgradeListener = (
     req: ServerRequest,

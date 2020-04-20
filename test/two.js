@@ -13,16 +13,16 @@ createServer(
         cert: fs.readFileSync(path.join(__dirname, "server.crt")),
     },
     function (req, res) {
-        if (!("encrypted" in req.socket)) {
+        if ("encrypted" in req.socket) {
+            res.writeHead(200, { "Content-Type": "text/plain" });
+            res.end("Welcome, HTTPS user!");
+        } else {
             const host = req.headers["host"];
             const originurl = req.url || "";
             const tourl = new URL(originurl, "https://" + host);
             tourl.port = String(port);
             res.writeHead(302, { Location: tourl.href });
             return res.end();
-        } else {
-            res.writeHead(200, { "Content-Type": "text/plain" });
-            res.end("Welcome, HTTPS user!");
         }
     }
 ).listen(port, "localhost", function () {
