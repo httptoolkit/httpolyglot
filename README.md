@@ -110,6 +110,11 @@ yarn install
 ```
 
 ```powershell
+yarn build
+```
+
+
+```powershell
 yarn serve
 ```
 
