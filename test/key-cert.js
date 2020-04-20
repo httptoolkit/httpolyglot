@@ -6,5 +6,9 @@ import { dirname } from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-export const key = fs.readFileSync(path.join(__dirname, "../","./server.key.pem"));
-export const cert = fs.readFileSync(path.join(__dirname, "../","./server.crt.pem"));
+export const key = fs.readFileSync(
+    path.join(__dirname, "../", "./server.key.pem")
+);
+export const cert = fs.readFileSync(
+    path.join(__dirname, "../", "./server.crt.pem")
+);
