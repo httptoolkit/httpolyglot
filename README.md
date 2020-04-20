@@ -20,7 +20,7 @@ Determine if the connection is over tls.
 const istls = "encrypted" in req.socket;
 ```
 
-Determine if the connection is http/2.
+Determine if the connection is `http/2`.
 
 ```js
 const ishttp2 = "h2" === req.socket.alpnProtocol;
