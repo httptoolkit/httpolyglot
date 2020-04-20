@@ -15,7 +15,7 @@ function createServer(
     requestListener: RequestListener = requestNotFound,
     upgradeListener: UpgradeListener = upgradeNotFound
 ): net.Server {
-    if (!(typeof config === "object")) {
+    if (!(config && typeof config === "object")) {
         throw new Error("options are required!");
     }
 
