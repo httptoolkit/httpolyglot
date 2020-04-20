@@ -1,7 +1,7 @@
 import {EventEmitter} from "events"
 import assert from "assert"
 
-const proxykeys=["addListener","on","prependListener]
+const proxykeys=["addListener","on","prependListener"]
 export function onlyonelistener(emitter:EventEmitter){
 emitter.setMaxListeners(1)
 return new Proxy(emitter,{
