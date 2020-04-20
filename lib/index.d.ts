@@ -17,6 +17,7 @@ export interface ServerResponse extends http.ServerResponse {
     socket: Socket;
     push?: (filename: string, options: PushOptions) => any;
 }
+
 export declare type Socket = Partial<tls.TLSSocket> & net.Socket;
 export declare type RequestListener = (
     req: ServerRequest,
