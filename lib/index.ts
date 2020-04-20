@@ -1,88 +1,61 @@
 import http from "http";
-import https from "https";
 import net from "net";
 import spdy from "spdy";
-import tls from "tls";
-import stream from "stream";
+import {
+    notfoundrequestlistener,
+    notfoundupgradelistener,
+    RequestListener,
+    ServerOptions,
+    UpgradeListener,
+} from "./declaration.js";
 
-export interface ServerRequest extends http.IncomingMessage {
-    socket: Socket;
-}
-interface PushOptions {
-    status?: number;
-    method?: string;
-    request?: http.OutgoingHttpHeaders;
-    response?: http.OutgoingHttpHeaders;
-}
-export interface ServerResponse extends http.ServerResponse {
-    socket: Socket;
-    push?: (pathname: string, options?: PushOptions) => stream.Writable;
-}
-export type Socket = Partial<tls.TLSSocket> & net.Socket;
-export type RequestListener = (req: ServerRequest, res: ServerResponse) => void;
-export type UpgradeListener = (
-    req: ServerRequest,
-    socket: Socket,
-    head: Buffer
-) => void;
-export type ServerOptions = spdy.ServerOptions;
-const notfoundrequestlistener = function (
-    req: ServerRequest,
-    res: ServerResponse
-) {
-    res.statusCode = 404;
-    res.write("404");
-    res.end();
-};
-const notfoundupgradelistener = function (
-    req: ServerRequest,
-    socket: Socket,
-    head: Buffer
-) {
-    socket.write(`HTTP/1.1 404 Not Found\r\nConnection: keep-alive\r\n\r\n`);
-    socket.destroy();
-};
 function createServer(
     config: ServerOptions,
     requestListener: RequestListener = notfoundrequestlistener,
     upgradeListener: UpgradeListener = notfoundupgradelistener
-): https.Server {
+): net.Server {
     if (!(typeof config === "object")) {
         throw new Error("options are required!");
     }
 
+    const servernet = net.createServer(config);
     const serverhttp = http.createServer(config);
     //@ts-ignore
     const serverspdy = spdy.createServer(config);
-
-    serverhttp.addListener(
-        "upgrade",
-        (request: ServerRequest, socket: Socket, head: Buffer) => {
-            serverspdy.emit("upgrade", request, socket, head);
-        }
-    );
-    serverhttp.removeAllListeners("request");
-    serverspdy.removeAllListeners("request");
-    serverspdy.addListener("request", requestListener);
-    serverhttp.addListener("request", (req, res) => {
-        serverspdy.emit("request", req, res);
-    });
-
+    serverhttp.addListener("upgrade", upgradeListener);
     serverspdy.addListener("upgrade", upgradeListener);
-    const onconnection = serverspdy.listeners("connection");
-    serverspdy.removeAllListeners("connection");
+    serverhttp.addListener("request", requestListener);
+    serverspdy.addListener("request", requestListener);
+    // serverhttp.addListener(
+    //     "upgrade",
+    //     (request: ServerRequest, socket: Socket, head: Buffer) => {
+    //         serverspdy.emit("upgrade", request, socket, head);
+    //     }
+    // );
+    // serverhttp.removeAllListeners("request");
+    // serverspdy.removeAllListeners("request");
+    // serverspdy.addListener("request", requestListener);
+    // serverhttp.addListener("request", (req, res) => {
+    //     serverspdy.emit("request", req, res);
+    // });
+
+    // serverspdy.addListener("upgrade", upgradeListener);
+    // const onconnection = serverspdy.listeners("connection");
+    // serverspdy.removeAllListeners("connection");
     function handletls(socket: net.Socket) {
-        onconnection.forEach((listeners: Function) =>
-            Reflect.apply(listeners, serverspdy, [socket])
-        );
+        serverspdy.emit("connection", socket);
+        // onconnection.forEach((listeners: Function) =>
+        //     Reflect.apply(listeners, serverspdy, [socket])
+        // );
     }
     function handlehttp(socket: net.Socket) {
         serverhttp.emit("connection", socket);
     }
-    serverspdy.addListener("connection", connectionListener);
-
+    // serverspdy.addListener("connection", connectionListener);
+    servernet.addListener("connection", connectionListener);
     function connectionListener(socket: net.Socket) {
-        socket.allowHalfOpen = false;
+        /* 类型“Socket”上不存在属性“allowHalfOpen” */
+        // socket.allowHalfOpen = false;
         //如果没有error监听器就添加error 监听器
         if (!socket.listeners("error").length) {
             socket.on("error", function () {});
@@ -122,6 +95,6 @@ function createServer(
         /* 测试发现不能使用on data事件,会收不到响应,多次数据会漏掉 */
     }
 
-    return serverspdy;
+    return servernet;
 }
 export { createServer };
