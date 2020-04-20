@@ -5,7 +5,8 @@
     "version": "1.0.0",
     "main": "./lib/index.js",
     "scripts": {
-        "fetch": "node --experimental-modules ./test/fetch1.js && node --experimental-modules ./test/fetch2.js",
+        "fetch1": "node --experimental-modules ./test/fetch1.js ",
+        "fetch2": " node --experimental-modules ./test/fetch2.js",
         "open": "node --experimental-modules ./test/open.js",
         "build": "tsc",
         "serve": "node --experimental-modules ./test/serve.js",
