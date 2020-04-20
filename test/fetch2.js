@@ -4,7 +4,6 @@ import { urls } from "./urls.js";
 
 process.on("unhandledRejection", console.error);
 
-
 // @ts-ignore
 
 ~((fetch) => {

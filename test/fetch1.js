@@ -3,6 +3,7 @@ import fetch1 from "node-fetch";
 import { cert } from "./key-cert.js";
 import { urls } from "./urls.js";
 import { logjson } from "./logjson.js";
+import { formatresponse } from "./format-response.js";
 
 process.on("unhandledRejection", console.error);
 
@@ -30,8 +31,9 @@ const fetch =
             .map((url) => {
                 return fetch(url, {
                     redirect: "manual",
-                }).then((r) => Promise.all([r.status,[...r.headers], r.text()]));
+                }).then((r) => formatresponse(r));
             })
+
             .flat(1 / 0)
     ).then(logjson);
     // @ts-ignore
