@@ -26,12 +26,14 @@ const fetch =
 // @ts-ignore
 
 ~((fetch) => {
-    Promise.all(
+    Promise.allSettled(
         urls
             .map((url) => {
-                return fetch(url, {
-                    redirect: "manual",
-                }).then((r) => formatresponse(r));
+                return fetch(url, { timeout: 2000, redirect: "manual" }).then(
+                    (r) => {
+                        return formatresponse(r);
+                    }
+                );
             })
 
             .flat(1 / 0)
