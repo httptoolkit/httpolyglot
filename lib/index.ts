@@ -110,6 +110,9 @@ socket.on("error", function () {});
             const firstByte = data[0];
             socket.unshift(data);
             if (firstByte === 22) {
+//默认已经是false了
+//// TLS sockets don't allow half open
+  //    socket.allowHalfOpen = false;
                 handletls(socket);
                 //      istls = true;
             } else if (32 < firstByte && firstByte < 127) {
