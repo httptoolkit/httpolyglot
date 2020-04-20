@@ -2,7 +2,7 @@
     "type": "module",
     "types": "./lib/index.d.ts",
     "name": "@masx200/http-https-spdy-http2-polyglot",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "main": "./lib/index.js",
     "scripts": {
         "fetch1": "node --experimental-modules ./test/fetch1.js ",
