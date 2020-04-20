@@ -93,9 +93,9 @@ declare function createServer(
 ): https.Server;
 ```
 
-The requestListener is a function which is automatically added to the 'request' event
+The `requestListener` is a function which is automatically added to the 'request' event
 
-The upgradeListener is a function which is automatically added to the 'upgrade' event
+The `upgradeListener` is a function which is automatically added to the 'upgrade' event
 
 # How it Works
 
