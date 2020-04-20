@@ -15,21 +15,19 @@ const fetch = fetch2.context({ session: { ca: cert } }).fetch;
         /**
          * @param {string | fetch2.Request} url
          */
-        urls
-            .map((url) => {
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => reject(new Error("timeout")), 2000);
+        urls.map((url) => {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => reject(new Error("timeout")), 2000);
 
-                    resolve(
-                        fetch(url, { timeout: 2000, redirect: "manual" }).then(
-                            (r) => {
-                                return formatresponse(r);
-                            }
-                        )
-                    );
-                });
-            })
-            .flat(1 / 0)
+                resolve(
+                    fetch(url, { timeout: 2000, redirect: "manual" }).then(
+                        (r) => {
+                            return formatresponse(r);
+                        }
+                    )
+                );
+            });
+        })
     ).then(logjson);
     // @ts-ignore
 })(fetch);

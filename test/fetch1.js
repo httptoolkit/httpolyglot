@@ -36,7 +36,7 @@ const fetch =
                 );
             })
 
-            .flat(1 / 0)
+           
     ).then(logjson);
     // @ts-ignore
 })(fetch);
