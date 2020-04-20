@@ -48,7 +48,7 @@ const server = httpolyglot.createServer(
         cert: fs.readFileSync("server.crt.pem"),
     },
     function (req, res) {
-        res.writeHead(200, { "Content-Type": "text/plain" });
+        res.writeHead(200, { "Content-Type": "text/html" });
         res.end(
             ("encrypted" in req.socket ? "HTTPS" : "HTTP") + " Connection!"
         );
