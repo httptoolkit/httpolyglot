@@ -18,7 +18,7 @@ export type UpgradeListener = (
     socket: Socket,
     head: Buffer
 ) => void;
-export type ServerOptions = https.ServerOptions;
+export type ServerOptions = spdy.ServerOptions;
 const notfoundrequestlistener = function (
     req: ServerRequest,
     res: ServerResponse
