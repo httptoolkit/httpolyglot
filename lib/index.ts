@@ -30,7 +30,7 @@ const notfoundrequestlistener = function (
     res: ServerResponse
 ) {
     res.statusCode = 404;
-
+    res.write("404");
     res.end();
 };
 const notfoundupgradelistener = function (

@@ -11,7 +11,7 @@
         "prettier": "prettier --write  *.md *.json ./**/*.js */**.ts"
     },
     "engines": {
-        "node": ">=8.0.0"
+        "node": ">=13.0.0"
     },
     "peerDependencies": {
         "spdy": "^4.0.2"

@@ -1,4 +1,5 @@
-import "./one.js";
-import "./two.js";
-import "./three.js";
-import "./zero.js";
+import "./notfound.js";
+import "./simple.js";
+import "./push.js";
+import "./redirect.js";
+import "./websocket.js";
