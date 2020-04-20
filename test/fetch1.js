@@ -29,7 +29,7 @@ const fetch =
     Promise.allSettled(
         urls.map(async (url) => {
             return fetch(url, { timeout: 2000, redirect: "manual" }).then(
-                (r) => {
+                async (r) => {
                     return formatresponse(r);
                 }
             );
