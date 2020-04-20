@@ -17,12 +17,17 @@ const fetch = fetch2.context({ session: { ca: cert } }).fetch;
          */
         urls
             .map((url) => {
-                
-                return fetch(url, { timeout: 2000, redirect: "manual" }).then(
-                    (r) => {
-                        return formatresponse(r);
-                    }
-                );
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => reject(new Error("timeout")), 2000);
+
+                    resolve(
+                        fetch(url, { timeout: 2000, redirect: "manual" }).then(
+                            (r) => {
+                                return formatresponse(r);
+                            }
+                        )
+                    );
+                });
             })
             .flat(1 / 0)
     ).then(logjson);
