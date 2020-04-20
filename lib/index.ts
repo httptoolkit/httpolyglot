@@ -4,7 +4,7 @@ import net from "net";
 import spdy from "spdy";
 import tls from "tls";
 import stream from "stream";
-import {onlyonelistener}from "./onlyonelistener.js"
+
 export interface ServerRequest extends http.IncomingMessage {
     socket: Socket;
 }
@@ -54,15 +54,7 @@ function createServer(
     const serverhttp = http.createServer(config);
     //@ts-ignore
     const serverspdy = spdy.createServer(config);
-    serverhttp.addListener(
-        "connect",
-        (request: ServerRequest, socket: Socket, head: Buffer) => {
-            serverspdy.emit("connect", request, socket, head);
-        }
-    );
-    serverhttp.addListener("clientError", (error: Error, socket: Socket) => {
-        serverspdy.emit("clientError", error, socket);
-    });
+
     serverhttp.addListener(
         "upgrade",
         (request: ServerRequest, socket: Socket, head: Buffer) => {
@@ -90,13 +82,11 @@ function createServer(
     serverspdy.addListener("connection", connectionListener);
 
     function connectionListener(socket: net.Socket) {
+        socket.allowHalfOpen = false;
         //如果没有error监听器就添加error 监听器
-if(
-!socket.
-listeners("error").length
-){
-socket.on("error", function () {});
-}
+        if (!socket.listeners("error").length) {
+            socket.on("error", function () {});
+        }
         //   let ishttp = false;
         //     let istls = false;
 
@@ -110,9 +100,9 @@ socket.on("error", function () {});
             const firstByte = data[0];
             socket.unshift(data);
             if (firstByte === 22) {
-//默认已经是false了
-//// TLS sockets don't allow half open
-  //    socket.allowHalfOpen = false;
+                //默认已经是false了
+                //// TLS sockets don't allow half open
+                //    socket.allowHalfOpen = false;
                 handletls(socket);
                 //      istls = true;
             } else if (32 < firstByte && firstByte < 127) {
@@ -132,6 +122,6 @@ socket.on("error", function () {});
         /* 测试发现不能使用on data事件,会收不到响应,多次数据会漏掉 */
     }
 
-    return onlyonelistener(serverspdy);
+    return serverspdy;
 }
 export { createServer };
