@@ -27,16 +27,13 @@ const fetch =
 
 ~((fetch) => {
     Promise.allSettled(
-        urls
-            .map((url) => {
-                return fetch(url, { timeout: 2000, redirect: "manual" }).then(
-                    (r) => {
-                        return formatresponse(r);
-                    }
-                );
-            })
-
-           
+        urls.map((url) => {
+            return fetch(url, { timeout: 2000, redirect: "manual" }).then(
+                (r) => {
+                    return formatresponse(r);
+                }
+            );
+        })
     ).then(logjson);
     // @ts-ignore
 })(fetch);
