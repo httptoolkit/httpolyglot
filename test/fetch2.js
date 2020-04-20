@@ -12,7 +12,7 @@ const fetch = fetch2.context({ session: { ca: cert } }).fetch;
 
 ~((fetch) => {
     Promise.allSettled(
-        urls.map((url) => {
+        urls.map(async (url) => {
             return fetch(url, { timeout: 2000, redirect: "manual" }).then(
                 (r) => {
                     return formatresponse(r);
