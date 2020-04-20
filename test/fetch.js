@@ -15,9 +15,10 @@ Promise.all(
     urls
         .map((url) =>
             fetcharr.map((fetch) => {
-                return fetch(url, { redirect: "manual", agent }).then((r) =>
-                    Promise.all([r, r.text()])
-                );
+                return fetch(url, {
+                    redirect: "manual",
+                    agent: url.startsWith("http:") ? undefined : agent,
+                }).then((r) => Promise.all([r, r.text()]));
             })
         )
         .flat(1 / 0)
