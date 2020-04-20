@@ -14,7 +14,7 @@ yarn add spdy  @masx200/http-https-spdy-http2-polyglot
 
 # Connection protocol judgment
 
-Determine if the connection is tls.
+Determine if the connection is over tls.
 
 ```js
 const istls = "encrypted" in req.socket;
@@ -36,7 +36,7 @@ https://github.com/masx200/http-https-spdy-http2-polyglot/blob/master/test/push.
 
 https://github.com/masx200/http-https-spdy-http2-polyglot/blob/master/test/websocket.js
 
--   Simple Determine if the connection is tls.
+-   Simple Determine the connection protocol
 
 ```javascript
 const httpolyglot = require("@masx200/http-https-spdy-http2-polyglot");
