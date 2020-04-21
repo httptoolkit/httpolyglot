@@ -1,13 +1,13 @@
 {
     "type": "module",
-    "types": "./lib/index.d.ts",
+    "types": "./dist/index.d.ts",
     "name": "@masx200/http-https-spdy-http2-polyglot",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "main": "./lib/index.js",
     "scripts": {
         "test": "node --experimental-modules ./test/test.js ",
         "open": "node --experimental-modules ./test/open.js",
-        "build": "tsc",
+        "build": "tsc&& api-extractor run --local",
         "serve": "node --experimental-modules ./test/serve.js",
         "prettier": "prettier --write  *.md *.json ./**/*.js */**.ts"
     },
@@ -29,9 +29,10 @@
         "@types/spdy": "^3.4.4"
     },
     "devDependencies": {
+        "@microsoft/api-extractor": "^7.7.13",
+        "@types/ws": "^7.2.4",
         "fetch-h2": "^2.4.5",
         "node-fetch": "^3.0.0-beta.4",
-        "@types/ws": "^7.2.4",
         "open": "^7.0.3",
         "prettier": "^2.0.4",
         "spdy": "^4.0.2",

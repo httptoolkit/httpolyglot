@@ -7,7 +7,7 @@ import https from "https";
 export interface ServerRequest extends http.IncomingMessage {
     socket: Socket;
 }
-interface PushOptions {
+export interface PushOptions {
     status?: number;
     method?: string;
     request?: http.OutgoingHttpHeaders;
