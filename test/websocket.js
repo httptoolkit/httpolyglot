@@ -1,11 +1,10 @@
-import { createServer } from "../lib/index.js";
 import fs from "fs";
-const port = 8999;
-import path from "path";
+import path, { dirname } from "path";
 import { fileURLToPath } from "url";
-import { dirname } from "path";
 import ws from "ws";
+import { createServer } from "../lib/index.js";
 import { cert, key } from "./key-cert.js";
+const port = 8999;
 const wsServer = new ws.Server({ noServer: true });
 wsServer.on("connection", (websocket, req) => {
     websocket.send(JSON.stringify(req.headers));
