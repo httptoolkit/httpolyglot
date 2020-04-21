@@ -9,9 +9,12 @@ const execpro = util.promisify(execFile);
 // @ts-ignore
 const __filename = fileURLToPath(import.meta.url);
 var __dirname = dirname(__filename);
-const files = ["early-disconnect.js", "fetch1.js", "fetch2.js"].map((p) =>
-    path.join(__dirname, p)
-);
+const files = [
+    "early-server-disconnect.js",
+    "early-client-disconnect.js",
+    "fetch1.js",
+    "fetch2.js",
+].map((p) => path.join(__dirname, p));
 files.reduce(async (prev, file) => {
     await prev;
     const result = await execpro("node", [file]);
