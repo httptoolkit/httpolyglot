@@ -10,6 +10,7 @@ const execpro = util.promisify(execFile);
 const __filename = fileURLToPath(import.meta.url);
 var __dirname = dirname(__filename);
 const files = [
+    "tls-early-disconnect.js",
     "early-server-disconnect.js",
     "early-client-disconnect.js",
     "fetch1.js",

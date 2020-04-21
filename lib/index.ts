@@ -1,13 +1,14 @@
+import assert from "assert";
 import http from "http";
 import net from "net";
 import spdy from "spdy";
-import assert from "assert";
+import tls from "tls";
 import {
-    requestNotFound,
-    upgradeNotFound,
     RequestListener,
+    requestNotFound,
     ServerOptions,
     UpgradeListener,
+    upgradeNotFound,
 } from "./declaration.js";
 export * from "./declaration.js";
 export { createServer };
@@ -27,31 +28,35 @@ function createServer(
     const serverhttp = http.createServer(config);
     //@ts-ignore
     const serverspdy = spdy.createServer(config);
+    servernet.addListener("error", () => {});
+    serverhttp.addListener("ClientError", (err: Error, socket: net.Socket) => {
+        socket.destroy();
+    });
+    serverhttp.addListener("error", () => {});
+    serverspdy.addListener(
+        "tlsClientError",
+        (err: Error, socket: tls.TLSSocket) => {
+            socket.destroy();
+        }
+    );
+    serverspdy.addListener("error", () => {});
+    serverspdy.prependListener("secureConnection", (socket: tls.TLSSocket) => {
+        if (!socket.listeners("error").length) {
+            socket.on("error", () => {});
+        }
+    });
     serverhttp.addListener("upgrade", upgradeListener);
     serverspdy.addListener("upgrade", upgradeListener);
     serverhttp.addListener("request", requestListener);
     serverspdy.addListener("request", requestListener);
-    // serverhttp.addListener(
-    //     "upgrade",
-    //     (request: ServerRequest, socket: Socket, head: Buffer) => {
-    //         serverspdy.emit("upgrade", request, socket, head);
-    //     }
-    // );
-    // serverhttp.removeAllListeners("request");
-    // serverspdy.removeAllListeners("request");
-    // serverspdy.addListener("request", requestListener);
-    // serverhttp.addListener("request", (req, res) => {
-    //     serverspdy.emit("request", req, res);
-    // });
-
-    // serverspdy.addListener("upgrade", upgradeListener);
-    // const onconnection = serverspdy.listeners("connection");
-    // serverspdy.removeAllListeners("connection");
+    /* 修复bug
+    程序没有监听套接字上的error事件,然后程序崩溃了
+net.Socket
+tls.TLSSocket
+自动监听error事件,防止服务器意外退出
+*/
     function handletls(socket: net.Socket) {
         serverspdy.emit("connection", socket);
-        // onconnection.forEach((listeners: Function) =>
-        //     Reflect.apply(listeners, serverspdy, [socket])
-        // );
     }
     function handlehttp(socket: net.Socket) {
         serverhttp.emit("connection", socket);
@@ -64,7 +69,7 @@ function createServer(
         // socket.allowHalfOpen = false;
         //如果没有error监听器就添加error 监听器
         if (!socket.listeners("error").length) {
-            socket.on("error", function () {});
+            socket.on("error", () => {});
         }
         //   let ishttp = false;
         //     let istls = false;
@@ -91,12 +96,6 @@ function createServer(
             } else {
                 socket.destroy();
             }
-            //   if (ishttp) {
-
-            //    }
-            //      if (istls) {
-
-            //        }
         }
         /* 测试发现不能使用on data事件,会收不到响应,多次数据会漏掉 */
     }
