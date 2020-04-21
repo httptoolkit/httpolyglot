@@ -1,6 +1,7 @@
 import http from "http";
 import net from "net";
 import spdy from "spdy";
+import assert from "assert";
 import {
     requestNotFound,
     upgradeNotFound,
@@ -10,6 +11,7 @@ import {
 } from "./declaration.js";
 export * from "./declaration.js";
 export { createServer };
+
 function createServer(
     config: ServerOptions,
     requestListener: RequestListener = requestNotFound,
@@ -57,7 +59,7 @@ function createServer(
     // serverspdy.addListener("connection", connectionListener);
     servernet.addListener("connection", connectionListener);
     function connectionListener(socket: net.Socket) {
-        console.assert(Reflect.get(socket, "allowHalfOpen") === false);
+        assert(Reflect.get(socket, "allowHalfOpen") === false);
         /* 类型“Socket”上不存在属性“allowHalfOpen” */
         // socket.allowHalfOpen = false;
         //如果没有error监听器就添加error 监听器
