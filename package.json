@@ -2,7 +2,7 @@
     "type": "module",
     "types": "./lib/index.d.ts",
     "name": "@masx200/http-https-spdy-http2-polyglot",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "main": "./lib/index.js",
     "scripts": {
         "fetch1": "node --experimental-modules ./test/fetch1.js ",
@@ -22,7 +22,8 @@
         "http",
         "https",
         "multiplex",
-        "polyglot"
+        "polyglot",
+        "http2"
     ],
     "dependencies": {
         "@types/node": "^13.13.0",
