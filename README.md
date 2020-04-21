@@ -118,11 +118,7 @@ yarn serve
 ```
 
 ```powershell
-yarn fetch1
-```
-
-```powershell
-yarn fetch2
+yarn test
 ```
 
 ```powershell
