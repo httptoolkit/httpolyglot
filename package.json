@@ -25,5 +25,8 @@
   "repository": {
     "type": "git",
     "url": "http://github.com/httptoolkit/httpolyglot.git"
+  },
+  "dependencies": {
+    "spdy": "^4.0.2"
   }
 }
