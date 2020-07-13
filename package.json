@@ -13,6 +13,7 @@
   "keywords": [
     "http",
     "https",
+    "http2",
     "multiplex",
     "polyglot"
   ],
@@ -27,6 +28,5 @@
     "url": "http://github.com/httptoolkit/httpolyglot.git"
   },
   "dependencies": {
-    "spdy": "^4.0.2"
   }
 }
