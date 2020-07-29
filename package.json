@@ -1,6 +1,6 @@
 {
   "name": "@httptoolkit/httpolyglot",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "author": "Tim Perry <pimterry@gmail.com>",
   "description": "Serve http and https connections over the same port with node.js",
   "main": "./lib/index.js",
@@ -27,6 +27,5 @@
     "type": "git",
     "url": "http://github.com/httptoolkit/httpolyglot.git"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
