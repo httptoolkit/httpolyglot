@@ -8,6 +8,7 @@ Forked from the original [`httpolyglot`](https://github.com/mscdex/httpolyglot) 
 * Fixing `tlsClientError`: https://github.com/mscdex/httpolyglot/pull/11.
 * Exposing the lost bytes from https://github.com/mscdex/httpolyglot/issues/13 on the socket, as `__httpPeekedData`.
 * Dropping support for old versions of Node (and thereby simplifying the code somewhat)
+* Converting to TypeScript
 
 Requirements
 ============

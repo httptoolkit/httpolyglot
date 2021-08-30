@@ -4,7 +4,7 @@ var https = require('https');
 var assert = require('assert');
 
 var common = require(__dirname + '/common');
-var httpolyglot = require(__dirname + '/../lib/index');
+var httpolyglot = require(__dirname + '/../');
 
 var srv = httpolyglot.createServer({
   key: fs.readFileSync(__dirname + '/fixtures/server.key'),
