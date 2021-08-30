@@ -36,10 +36,12 @@
     "type": "git",
     "url": "http://github.com/httptoolkit/httpolyglot.git"
   },
+  "dependencies": {
+    "@types/node": "^16.7.6"
+  },
   "devDependencies": {
     "@types/chai": "^4.2.21",
     "@types/mocha": "^9.0.0",
-    "@types/node": "^16.7.6",
     "chai": "^4.3.4",
     "mocha": "^9.1.1",
     "rimraf": "^3.0.2",
