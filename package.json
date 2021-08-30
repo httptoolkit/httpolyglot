@@ -14,7 +14,7 @@
     "build": "tsc",
     "prepack": "npm run build",
     "pretest": "npm run build",
-    "test": "node test/test.js"
+    "test": "mocha -r ts-node/register 'test/**/*.spec.ts'"
   },
   "engines": {
     "node": ">=8.0.0"
@@ -36,10 +36,14 @@
     "type": "git",
     "url": "http://github.com/httptoolkit/httpolyglot.git"
   },
-  "dependencies": {},
   "devDependencies": {
+    "@types/chai": "^4.2.21",
+    "@types/mocha": "^9.0.0",
     "@types/node": "^16.7.6",
+    "chai": "^4.3.4",
+    "mocha": "^9.1.1",
     "rimraf": "^3.0.2",
+    "ts-node": "^10.2.1",
     "typescript": "^4.4.2"
   }
 }
