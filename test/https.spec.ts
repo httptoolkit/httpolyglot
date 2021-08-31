@@ -1,14 +1,11 @@
 import * as net from 'net';
+import * as tls from 'tls';
 import * as http from 'http';
 import * as https from 'https';
-import * as fs from 'fs';
 import { expect } from 'chai';
 
 import { Server } from '..';
-import { Deferred, getDeferred, streamToBuffer } from './test-util';
-
-const key = fs.readFileSync(__dirname + '/fixtures/server.key');
-const cert = fs.readFileSync(__dirname + '/fixtures/server.crt');
+import { testKey, testCert, Deferred, getDeferred, streamToBuffer } from './test-util';
 
 describe("HTTPS", () => {
 
@@ -17,7 +14,7 @@ describe("HTTPS", () => {
 
     beforeEach(() => {
         serverReqRes = getDeferred();
-        server = new Server({ key, cert }, (req, res) =>
+        server = new Server({ key: testKey, cert: testCert }, (req, res) =>
             serverReqRes.resolve([req, res])
         );
         server.listen();
@@ -33,7 +30,7 @@ describe("HTTPS", () => {
             port: (server.address() as net.AddressInfo).port,
             method: 'POST',
             path: '/path',
-            ca: cert
+            ca: testCert
         });
         clientRequest.end('request body');
 
@@ -58,8 +55,26 @@ describe("HTTPS", () => {
         expect(resBody.toString()).to.equal('response body');
     });
 
-    it("should handle immediate closure", async () => {
+    it("should handle immediate TCP closure", async () => {
         const socket = net.connect({
+            host: 'localhost',
+            port: (server.address() as net.AddressInfo).port
+        });
+
+        serverReqRes.then(() => {
+            throw new Error("Request handler should not be called");
+        });
+
+        await new Promise((resolve, reject) => {
+            socket.on('connect', resolve);
+            socket.on('error', reject);
+        });
+
+        socket.end();
+    });
+
+    it("should handle immediate TLS closure", async () => {
+        const socket = tls.connect({
             host: 'localhost',
             port: (server.address() as net.AddressInfo).port
         });
