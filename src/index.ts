@@ -60,7 +60,7 @@ export class Server extends net.Server {
         if (tlsSocket.alpnProtocol === false || tlsSocket.alpnProtocol === 'http/1.1') {
           this._httpServer.emit('connection', tlsSocket);
         } else {
-          this._http2Server.emit('connection', new SocketWrapper(tlsSocket));
+          this._http2Server.emit('connection', tlsSocket);
         }
       });
     } else {
