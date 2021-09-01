@@ -9,7 +9,7 @@ import { EventEmitter } from 'events';
 
 declare module 'net' {
   interface Socket {
-    __httpPeekedData: Buffer;
+    __httpPeekedData?: Buffer;
   }
 }
 
