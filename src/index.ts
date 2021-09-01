@@ -13,12 +13,6 @@ declare module 'net' {
   }
 }
 
-declare module 'stream' {
-  interface Duplex {
-    allowHalfOpen: boolean;
-  }
-}
-
 function onError(err: any) {}
 
 const TLS_HANDSHAKE_BYTE = 0x16; // SSLv3+ or TLS handshake
@@ -63,7 +57,7 @@ export class Server extends net.Server {
       // If we have TLS config, create a TLS server, which will pass sockets to
       // the relevant subserver once the TLS connection is set up.
       this._tlsServer = new tls.Server(tlsConfig, (tlsSocket) => {
-        if ((tlsSocket.alpnProtocol as any) === false || tlsSocket.alpnProtocol === 'http/1.1') {
+        if (tlsSocket.alpnProtocol === false || tlsSocket.alpnProtocol === 'http/1.1') {
           this._httpServer.emit('connection', tlsSocket);
         } else {
           this._http2Server.emit('connection', new SocketWrapper(tlsSocket));
