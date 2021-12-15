@@ -3,7 +3,6 @@ import * as tls from 'tls';
 import * as http from 'http';
 import * as https from 'https';
 import * as http2 from 'http2';
-const SocketWrapper = require('_stream_wrap');
 
 import { EventEmitter } from 'events';
 
@@ -136,7 +135,15 @@ export class Server extends net.Server {
       socket.unshift(data);
       if (data.slice(0, HTTP2_PREFACE_BUFFER.length).equals(HTTP2_PREFACE_BUFFER)) {
         // We have a full match for the preface - it's definitely HTTP/2.
-        h2Server.emit('connection', new SocketWrapper(socket));
+
+        // For HTTP/2 we hit issues when passing non-socket streams (like HTTP/2 streams,
+        // for proxying H2-over-H2). Marking the sockets like this resolves that:
+        const socketWithInternals = socket as { _handle?: { isStreamBase?: boolean } };
+        if (socketWithInternals._handle) {
+          socketWithInternals._handle.isStreamBase = false;
+        }
+
+        h2Server.emit('connection', socket);
         return;
       } else {
         h1Server.emit('connection', socket);
