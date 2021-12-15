@@ -5,6 +5,7 @@ A module for serving http and https connections over the same port.
 
 Forked from the original [`httpolyglot`](https://github.com/mscdex/httpolyglot) to fix various issues required for [HTTP Toolkit](https://httptoolkit.tech), including:
 
+* Support for HTTP/2
 * Fixing `tlsClientError`: https://github.com/mscdex/httpolyglot/pull/11.
 * Exposing the lost bytes from https://github.com/mscdex/httpolyglot/issues/13 on the socket, as `__httpPeekedData`.
 * Dropping support for old versions of Node (and thereby simplifying the code somewhat)
