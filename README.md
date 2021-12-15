@@ -13,7 +13,7 @@ Forked from the original [`httpolyglot`](https://github.com/mscdex/httpolyglot) 
 Requirements
 ============
 
-* [node.js](http://nodejs.org/) -- v8.0.0 or newer
+* [node.js](http://nodejs.org/) -- v12.0.0 or newer
 
 
 Install
