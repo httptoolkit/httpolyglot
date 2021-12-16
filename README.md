@@ -1,5 +1,6 @@
-Description
-===========
+# Httpolyglot [![Build Status](https://github.com/httptoolkit/httpolyglot/workflows/CI/badge.svg)](https://github.com/httptoolkit/httpolyglot/actions) [![Available on NPM](https://img.shields.io/npm/v/@httptoolkit/httpolyglot.svg)](https://npmjs.com/package/@httptoolkit/httpolyglot)
+
+> _Part of [HTTP Toolkit](https://httptoolkit.tech): powerful tools for building, testing & debugging HTTP(S)_
 
 A module for serving http and https connections over the same port.
 
