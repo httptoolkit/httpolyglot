@@ -28,21 +28,46 @@ export class Server extends net.Server {
   private _http2Server: http2.Http2Server;
   private _tlsServer: EventEmitter;
 
+  /**
+   * Create an Httpolyglot instance with just a request listener to support plain-text
+   * HTTP & HTTP/2 on the same port, with incoming TLS connections being closed immediately.
+   */
   constructor(requestListener: http.RequestListener);
-  constructor(tlsConfig: https.ServerOptions, requestListener: http.RequestListener);
-  constructor(configOrListener: https.ServerOptions | http.RequestListener, listener?: http.RequestListener) {
+  /**
+   * Call with a full TLS configuration to create a TLS+HTTP+HTTP/2 server, which can
+   * support all protocols on the same port.
+   */
+  constructor(config: https.ServerOptions, requestListener: http.RequestListener);
+  /**
+   * Pass an existing TLS server, instead of TLS configuration, to create a TLS+HTTP+HTTP/2
+   * server. All incoming TLS requests will be emitted as 'connection' events on the given
+   * TLS server, and all 'secureConnection' events coming from the TLS server will be
+   * handled according to the connection type detected on that socket.
+   */
+  constructor(tlsServer: tls.Server, requestListener: http.RequestListener);
+  constructor(
+    configOrServerOrListener:
+      | https.ServerOptions
+      | tls.Server
+      | http.RequestListener,
+    listener?: http.RequestListener
+  ) {
     // We just act as a plain TCP server, accepting and examing
     // each connection, then passing it to the right subserver.
     super((socket) => this.connectionListener(socket));
 
     let tlsConfig: https.ServerOptions | undefined;
+    let tlsServer: tls.Server | undefined;
     let requestListener: http.RequestListener;
 
-    if (typeof configOrListener === 'function') {
-      requestListener = configOrListener;
+    if (typeof configOrServerOrListener === 'function') {
+      requestListener = configOrServerOrListener;
       tlsConfig = undefined;
+    } else if (configOrServerOrListener instanceof tls.Server) {
+      tlsServer = configOrServerOrListener;
+      requestListener = listener!;
     } else {
-      tlsConfig = configOrListener;
+      tlsConfig = configOrServerOrListener;
       requestListener = listener!;
     }
 
@@ -54,16 +79,15 @@ export class Server extends net.Server {
     this._httpServer = new http.Server(boundListener);
     this._http2Server = http2.createServer({}, boundListener as any as Http2Listener);
 
-    if (typeof tlsConfig === 'object') {
+    if (tlsServer) {
+      // If we've been given a preconfigured TLS server, we use that directly, and
+      // subscribe to connections there
+      this._tlsServer = tlsServer;
+      this._tlsServer.on('secureConnection', this.tlsListener.bind(this));
+    } else if (typeof tlsConfig === 'object') {
       // If we have TLS config, create a TLS server, which will pass sockets to
       // the relevant subserver once the TLS connection is set up.
-      this._tlsServer = new tls.Server(tlsConfig, (tlsSocket) => {
-        if (tlsSocket.alpnProtocol === false || tlsSocket.alpnProtocol === 'http/1.1') {
-          this._httpServer.emit('connection', tlsSocket);
-        } else {
-          this._http2Server.emit('connection', tlsSocket);
-        }
-      });
+      this._tlsServer = new tls.Server(tlsConfig, this.tlsListener.bind(this));
     } else {
       // Fake server that rejects all connections:
       this._tlsServer = new EventEmitter();
@@ -126,6 +150,14 @@ export class Server extends net.Server {
     }
   }
 
+  private tlsListener(tlsSocket: tls.TLSSocket) {
+    if (tlsSocket.alpnProtocol === false || tlsSocket.alpnProtocol === 'http/1.1') {
+      this._httpServer.emit('connection', tlsSocket);
+    } else {
+      this._http2Server.emit('connection', tlsSocket);
+    }
+  }
+
   private http2Listener(socket: net.Socket, pastData?: Buffer) {
     const h1Server = this._httpServer;
     const h2Server = this._http2Server;
@@ -173,8 +205,28 @@ export class Server extends net.Server {
   }
 }
 
+/**
+ * Create an Httpolyglot instance with just a request listener to support plain-text
+ * HTTP & HTTP/2 on the same port, with incoming TLS connections being closed immediately.
+ */
 export function createServer(requestListener: http.RequestListener): Server;
+/**
+ * Create an instance with a full TLS configuration to create a TLS+HTTP+HTTP/2 server, which can
+ * support all protocols on the same port.
+ */
 export function createServer(tlsConfig: https.ServerOptions, requestListener: http.RequestListener): Server;
-export function createServer(configOrListener: https.ServerOptions | http.RequestListener, listener?: http.RequestListener) {
-  return new Server(configOrListener as any, listener as any);
+/**
+* Create an instance around an existing TLS server, instead of TLS configuration, to create a
+* TLS+HTTP+HTTP/2 server with custom TLS handling. All incoming TLS requests will be emitted as
+* 'connection' events on the given TLS server, and all 'secureConnection' events coming from the
+* TLS server will be handled according to the connection type detected on that socket.
+*/
+export function createServer(tlsServer: tls.Server, requestListener: http.RequestListener): Server;
+export function createServer(configOrServerOrListener:
+  | https.ServerOptions
+  | http.RequestListener
+  | tls.Server,
+  listener?: http.RequestListener
+) {
+  return new Server(configOrServerOrListener as any, listener as any);
 };
