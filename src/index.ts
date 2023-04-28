@@ -151,7 +151,11 @@ export class Server extends net.Server {
   }
 
   private tlsListener(tlsSocket: tls.TLSSocket) {
-    if (tlsSocket.alpnProtocol === false || tlsSocket.alpnProtocol === 'http/1.1') {
+    if (
+      tlsSocket.alpnProtocol === false || // Old non-ALPN client
+      tlsSocket.alpnProtocol === 'http/1.1' || // Modern HTTP/1.1 ALPN client
+      tlsSocket.alpnProtocol === 'http 1.1' // Broken ALPN client (e.g. https-proxy-agent)
+    ) {
       this._httpServer.emit('connection', tlsSocket);
     } else {
       this._http2Server.emit('connection', tlsSocket);
