@@ -129,9 +129,7 @@ export class Server extends net.Server {
       socket.unshift(data);
 
       // Pass the socket to the correct subserver:
-      if (firstByte === TLS_HANDSHAKE_BYTE) {
-        // TLS sockets don't allow half open
-        socket.allowHalfOpen = false;
+      if (firstByte === TLS_HANDSHAKE_BYTE) {;
         this._tlsServer.emit('connection', socket);
       } else {
         if (firstByte === HTTP2_PREFACE_BUFFER[0]) {

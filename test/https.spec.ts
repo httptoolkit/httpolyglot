@@ -91,4 +91,26 @@ describe("HTTPS", () => {
         socket.end();
     });
 
+    it("should report TLS errors", async () => {
+        serverReqRes.then(() => {
+            throw new Error("Request handler should not be called");
+        });
+
+        const serverTlsErrorPromise = new Promise<any>((resolve) => {
+            server.on('tlsClientError', resolve);
+        });
+
+        const request = https.get({
+            host: '127.0.0.1',
+            port: (server.address() as net.AddressInfo).port,
+            rejectUnauthorized: true // <-- Will error, rejecting the handshake
+        });
+
+        const reqError = await new Promise<any>((resolve) => request.on('error', resolve));
+        expect(reqError.message).to.match(/certificate/);
+
+        const serverTlsError = await serverTlsErrorPromise;
+        expect(serverTlsError.message).to.equal('socket hang up');
+    });
+
 });
