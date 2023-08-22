@@ -1,16 +1,17 @@
 # Httpolyglot [![Build Status](https://github.com/httptoolkit/httpolyglot/workflows/CI/badge.svg)](https://github.com/httptoolkit/httpolyglot/actions) [![Available on NPM](https://img.shields.io/npm/v/@httptoolkit/httpolyglot.svg)](https://npmjs.com/package/@httptoolkit/httpolyglot)
 
-> _Part of [HTTP Toolkit](https://httptoolkit.tech): powerful tools for building, testing & debugging HTTP(S)_
+> _Part of [HTTP Toolkit](https://httptoolkit.com): powerful tools for building, testing & debugging HTTP(S)_
 
-A module for serving http and https connections over the same port.
+A module for serving HTTP, HTTPS and HTTP/2 connections, all over the same port.
 
-Forked from the original [`httpolyglot`](https://github.com/mscdex/httpolyglot) to fix various issues required for [HTTP Toolkit](https://httptoolkit.tech), including:
+Forked from the original [`httpolyglot`](https://github.com/mscdex/httpolyglot) to fix various issues required for [HTTP Toolkit](https://httptoolkit.com), including:
 
 * Support for HTTP/2
 * Fixing `tlsClientError`: https://github.com/mscdex/httpolyglot/pull/11.
 * Exposing the lost bytes from https://github.com/mscdex/httpolyglot/issues/13 on the socket, as `__httpPeekedData`.
 * Dropping support for old versions of Node (and thereby simplifying the code somewhat)
 * Converting to TypeScript
+* Event subscription support (subscribe to `server.on(x, ...)` to hear about `x` from _all_ internal servers - HTTP/2, HTTP/1, TLS and net)
 
 Requirements
 ============
