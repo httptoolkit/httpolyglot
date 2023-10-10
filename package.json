@@ -37,7 +37,7 @@
     "url": "http://github.com/httptoolkit/httpolyglot.git"
   },
   "dependencies": {
-    "@types/node": "^16.7.10"
+    "@types/node": "*"
   },
   "devDependencies": {
     "@types/chai": "^4.2.21",
