@@ -112,7 +112,7 @@ export class Server extends net.Server {
   }
 
   private connectionListener(socket: net.Socket) {
-    const data = socket.read(1);
+    const data = socket.read();
 
     if (data === null) {
       socket.removeListener('error', onError);
@@ -137,11 +137,6 @@ export class Server extends net.Server {
           // reading until we get the whole stream:
           this.http2Listener(socket);
         } else {
-          // The above unshift isn't always sufficient to invisibly replace the
-          // read data. The rawPacket property on errors in the clientError event
-          // for plain HTTP servers loses this data - this prop makes it available.
-          // Bit of a hacky fix, but sufficient to allow for manual workarounds.
-          socket.__httpPeekedData = data;
           this._httpServer.emit('connection', socket);
         }
       }

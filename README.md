@@ -7,9 +7,9 @@ A module for serving HTTP, HTTPS and HTTP/2 connections, all over the same port.
 Forked from the original [`httpolyglot`](https://github.com/mscdex/httpolyglot) to fix various issues required for [HTTP Toolkit](https://httptoolkit.com), including:
 
 * Support for HTTP/2
-* Fixing `tlsClientError`: https://github.com/mscdex/httpolyglot/pull/11.
-* Exposing the lost bytes from https://github.com/mscdex/httpolyglot/issues/13 on the socket, as `__httpPeekedData`.
-* Dropping support for old versions of Node (and thereby simplifying the code somewhat)
+* Fixing `tlsClientError`: https://github.com/mscdex/httpolyglot/pull/11
+* Include initially sniffed bytes aren't lost in subsequent `clientError` events (https://github.com/mscdex/httpolyglot/issues/13)
+* Dropping support for very old versions of Node (and thereby simplifying the code somewhat)
 * Converting to TypeScript
 * Event subscription support (subscribe to `server.on(x, ...)` to hear about `x` from _all_ internal servers - HTTP/2, HTTP/1, TLS and net)
 
