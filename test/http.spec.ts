@@ -73,7 +73,7 @@ describe("HTTP", () => {
             throw new Error("Request handler should not be called");
         });
 
-        const serverErrorPromise = new Promise<any>((resolve) => {
+        const serverErrorPromise = new Promise<[any, net.Socket]>((resolve) => {
             // Multiple errors will be fired - we want to check the data from the final
             // error (which will contain the whole packet)
             let lastResult: any;
