@@ -5,7 +5,7 @@ import * as https from 'https';
 import { expect } from 'chai';
 
 import { Server } from '..';
-import { testKey, testCert, Deferred, getDeferred, streamToBuffer } from './test-util';
+import { testKey, testCert, Deferred, getDeferred, streamToBuffer, sendRawRequest } from './test-util';
 
 describe("HTTPS", () => {
 
@@ -111,6 +111,40 @@ describe("HTTPS", () => {
 
         const serverTlsError = await serverTlsErrorPromise;
         expect(serverTlsError.message).to.equal('socket hang up');
+    });
+
+    it("should report client errors with full packet data", async () => {
+        serverReqRes.then(() => {
+            throw new Error("Request handler should not be called");
+        });
+
+        const serverErrorPromise = new Promise<any>((resolve) => {
+            // Multiple errors will be fired - we want to check the data from the final
+            // error (which will contain the whole packet)
+            let lastResult: any;
+
+            server.on('clientError', (err: any, socket: net.Socket) => {
+                socket.destroy();
+
+                lastResult = [err, socket];
+                setImmediate(() => resolve(lastResult));
+            });
+        });
+
+        sendRawRequest(server, 'QQQ http://example.com HTTP/1.1\r\n\r\n');
+
+        let [serverError, failedSocket] = await serverErrorPromise;
+
+        expect(serverError.message).to.include('Invalid method');
+
+        const combinedPacket = Buffer.concat([
+            failedSocket.__httpPeekedData,
+            serverError.rawPacket
+        ].filter(Boolean));
+
+        expect(combinedPacket.toString('utf8')).to.equal(
+            'QQQ http://example.com HTTP/1.1\r\n\r\n'
+        );
     });
 
 });
