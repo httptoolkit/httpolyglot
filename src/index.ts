@@ -76,13 +76,9 @@ export class Server extends net.Server {
       requestListener = listener!;
     }
 
-    // We bind the request listener, so 'this' always refers to us, not each subserver.
-    // This means 'this' is consistent (and this.close() works).
-    const boundListener = requestListener.bind(this);
-
     // Create subservers for each supported protocol:
-    this._httpServer = new http.Server(boundListener);
-    this._http2Server = http2.createServer({}, boundListener as any as Http2Listener);
+    this._httpServer = new http.Server(requestListener);
+    this._http2Server = http2.createServer({}, requestListener);
 
     if (tlsServer) {
       // If we've been given a preconfigured TLS server, we use that directly, and
