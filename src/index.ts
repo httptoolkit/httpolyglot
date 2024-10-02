@@ -78,7 +78,9 @@ export class Server extends net.Server {
 
     // We bind the request listener, so 'this' always refers to us, not each subserver.
     // This means 'this' is consistent (and this.close() works).
-    const boundListener = requestListener.bind(this);
+    // Use `Function.prototype.bind` directly as frameworks like Express generate 
+    // methods from `http.METHODS`, and `BIND` is an included HTTP method.
+    const boundListener = Function.prototype.bind.call(requestListener, this);
 
     // Create subservers for each supported protocol:
     this._httpServer = new http.Server(boundListener);
