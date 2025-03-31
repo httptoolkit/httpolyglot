@@ -26,12 +26,7 @@
     "multiplex",
     "polyglot"
   ],
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://github.com/httptoolkit/httpolyglot/raw/master/LICENSE"
-    }
-  ],
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "http://github.com/httptoolkit/httpolyglot.git"
