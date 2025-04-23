@@ -6,17 +6,6 @@ import * as http2 from 'http2';
 
 import { EventEmitter } from 'events';
 
-declare module 'net' {
-  interface Socket {
-    /**
-     * Only preserved for types backward compat - always undefined in new releases.
-     *
-     * @deprecated
-     */
-    __httpPeekedData?: Buffer;
-  }
-}
-
 function onError(err: any) {}
 
 const TLS_HANDSHAKE_BYTE = 0x16; // SSLv3+ or TLS handshake
