@@ -2,17 +2,17 @@ import * as net from 'net';
 import * as http from 'http';
 import { expect } from 'chai';
 
-import { Server } from '..';
+import * as httpolyglot from '..';
 import { Deferred, getDeferred, streamToBuffer, sendRawRequest } from './test-util';
 
 describe("HTTP", () => {
 
-    let server: Server;
+    let server: httpolyglot.Server;
     let serverReqRes: Deferred<[http.IncomingMessage, http.ServerResponse]>;
 
     beforeEach(() => {
         serverReqRes = getDeferred();
-        server = new Server((req, res) => serverReqRes.resolve([req, res]));
+        server = httpolyglot.createServer((req, res) => serverReqRes.resolve([req, res]));
         server.listen();
     });
 

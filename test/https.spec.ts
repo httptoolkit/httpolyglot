@@ -4,17 +4,17 @@ import * as http from 'http';
 import * as https from 'https';
 import { expect } from 'chai';
 
-import { Server } from '..';
+import * as httpolyglot from '..';
 import { testKey, testCert, Deferred, getDeferred, streamToBuffer, sendRawRequest } from './test-util';
 
 describe("HTTPS", () => {
 
-    let server: Server;
+    let server: httpolyglot.Server;
     let serverReqRes: Deferred<[http.IncomingMessage, http.ServerResponse]>;
 
     beforeEach(() => {
         serverReqRes = getDeferred();
-        server = new Server({
+        server = httpolyglot.createServer({
             tls: { key: testKey, cert: testCert }
         }, (req, res) =>
             serverReqRes.resolve([req, res])

@@ -38,7 +38,7 @@ export interface HttpolyglotOptions {
   tls?: https.ServerOptions | tls.Server;
 }
 
-export class Server extends net.Server {
+class Server extends net.Server {
 
   private _httpServer: http.Server;
   private _http2Server: http2.Http2Server;
@@ -210,6 +210,8 @@ export class Server extends net.Server {
     });
   }
 }
+
+export type { Server };
 
 /**
  * Create an Httpolyglot instance with just a request listener to support plain-text
