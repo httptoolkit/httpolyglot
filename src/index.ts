@@ -166,16 +166,10 @@ class Server extends net.Server {
         // We have a full match for the preface - it's definitely HTTP/2.
 
         // For HTTP/2 we hit issues when passing non-socket streams (like H2 streams for proxying H2-over-H2).
-        if (NODE_MAJOR_VERSION <= 12) {
-          // For Node 12 and older, we need a (later deprecated) stream wrapper:
-          const StreamWrapper = require('_stream_wrap');
-          socket = new StreamWrapper(socket);
-        } else {
-          // For newer node, we can fix this with a quick patch here:
-          const socketWithInternals = socket as { _handle?: { isStreamBase?: boolean } };
-          if (socketWithInternals._handle) {
-            socketWithInternals._handle.isStreamBase = false;
-          }
+        // Setting isStreamBase to false is an effective workaround for this in Node 14+
+        const socketWithInternals = socket as { _handle?: { isStreamBase?: boolean } };
+        if (socketWithInternals._handle) {
+          socketWithInternals._handle.isStreamBase = false;
         }
 
         h2Server.emit('connection', socket);
