@@ -14,7 +14,9 @@ describe("HTTPS", () => {
 
     beforeEach(() => {
         serverReqRes = getDeferred();
-        server = new Server({ key: testKey, cert: testCert }, (req, res) =>
+        server = new Server({
+            tls: { key: testKey, cert: testCert }
+        }, (req, res) =>
             serverReqRes.resolve([req, res])
         );
         server.listen();

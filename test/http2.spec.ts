@@ -15,9 +15,11 @@ describe("HTTP/2", () => {
     beforeEach(() => {
         serverReqRes = getDeferred();
         server = new Server({
-            key: testKey,
-            cert: testCert,
-            ALPNProtocols: ['h2', 'http/1.1']
+            tls: {
+                key: testKey,
+                cert: testCert,
+                ALPNProtocols: ['h2', 'http/1.1']
+            }
         }, (req, res) =>
             serverReqRes.resolve([req, res])
         );
