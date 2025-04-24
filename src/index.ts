@@ -16,6 +16,19 @@ const HTTP2_PREFACE = Buffer.from('PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n');
 const couldBeHttp2 = (data: Buffer) => data[0] === HTTP2_PREFACE[0];
 const isHttp2 = (data: Buffer) => data.subarray(0, HTTP2_PREFACE.length).equals(HTTP2_PREFACE);
 
+const H1_METHOD_PREFIXES = http.METHODS.map(m => m + ' ');
+const H1_LONGEST_PREFIX = Math.max(...H1_METHOD_PREFIXES.map(m => m.length));
+const couldBeHttp1 = (initialData: Buffer) => {
+    const initialString = initialData.subarray(0, H1_LONGEST_PREFIX).toString('utf8');
+    for (let method of H1_METHOD_PREFIXES) {
+        const comparisonLength = Math.min(method.length, initialString.length);
+        if (initialString.slice(0, comparisonLength) === method.slice(0, comparisonLength)) {
+            return true;
+        }
+    }
+    return false;
+};
+
 // [0x4, 0x1|0x2] for SOCKS v4 seems fairly reliable. Some other protocols (Cassandra's CQL) use
 // the first byte for versions similarly, but shouldn't conflict in practice AFAICT, and no
 // other popular protocols actively match 0x4 that I can see.
@@ -34,7 +47,6 @@ const isSocksV5 = (data: Buffer) => {
 }
 const isSocks = (data: Buffer) => isSocksV4(data) || isSocksV5(data);
 
-const NODE_MAJOR_VERSION = parseInt(process.version.slice(1).split('.')[0], 10);
 function onError(err: any) {}
 
 type Http2Listener = (request: http2.Http2ServerRequest, response: http2.Http2ServerResponse) => void;
@@ -54,6 +66,14 @@ export interface HttpolyglotOptions {
    * be emitted as 'connection' events on this server.
    */
   socks?: net.Server;
+
+  /**
+   * A custom handler for unknown protocols. If provided, any unrecognized protocol sockets will
+   * be emitted on this server as 'connection' events. If not provided, the default behavior is to
+   * pass the socket to the HTTP server, which will typically reject the connection as
+   * unparseable, with a 400 response.
+   */
+  unknownProtocol?: net.Server;
 }
 
 class Server extends net.Server {
@@ -62,6 +82,7 @@ class Server extends net.Server {
   private _http2Server: http2.Http2Server;
   private _tlsServer: EventEmitter;
   private _socksHandler: EventEmitter | undefined;
+  private _unknownProtocolHandler: EventEmitter | undefined;
 
   constructor(config: HttpolyglotOptions, requestListener: http.RequestListener);
   constructor(
@@ -112,9 +133,11 @@ class Server extends net.Server {
     }
 
     this._socksHandler = config.socks;
+    this._unknownProtocolHandler = config.unknownProtocol;
 
     const subServers = [this._httpServer, this._http2Server, this._tlsServer];
     if (this._socksHandler) subServers.push(this._socksHandler);
+    if (this._unknownProtocolHandler) subServers.push(this._unknownProtocolHandler);
 
     // Proxy all event listeners setup onto the subservers, so any
     // subscriptions on this server are fed from all the subservers
@@ -159,7 +182,11 @@ class Server extends net.Server {
           // The connection _might_ be HTTP/2. To confirm, we need to keep
           // reading until we get the whole stream:
           this.http2Listener(socket);
+        } else if (this._unknownProtocolHandler && !couldBeHttp1(data)) {
+          this._unknownProtocolHandler.emit('connection', socket);
         } else {
+          // We pass everything else to the HTTP server, which can handle requests
+          // and/or reject unparseable client-error connections as it sees fit.
           this._httpServer.emit('connection', socket);
         }
       }

@@ -125,9 +125,9 @@ describe("SOCKSv5", () => {
         });
         req.end();
 
-        const response = await new Promise<http.ServerResponse>(resolve => req.on('response', resolve));
+        const response = await new Promise<http.IncomingMessage>(resolve => req.on('response', resolve));
         expect(response.statusCode).to.equal(200);
-        expect(await streamConsumers.text(response as any)).to.equal('HTTP response body');
+        expect(await streamConsumers.text(response)).to.equal('HTTP response body');
 
         incomingSockConn.end();
     });
