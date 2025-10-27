@@ -194,14 +194,17 @@ class Server extends net.Server {
   }
 
   private tlsListener(tlsSocket: tls.TLSSocket) {
+    // We trust recognized ALPN protocols if explicitly provided by the client:
     if (
-      tlsSocket.alpnProtocol === false || // Old non-ALPN client
       tlsSocket.alpnProtocol === 'http/1.1' || // Modern HTTP/1.1 ALPN client
       tlsSocket.alpnProtocol === 'http 1.1' // Broken ALPN client (e.g. https-proxy-agent)
     ) {
       this._httpServer.emit('connection', tlsSocket);
-    } else {
+    } else if (tlsSocket.alpnProtocol === 'h2') {
       this._http2Server.emit('connection', tlsSocket);
+    } else {
+      // If not provided, we unwrap & sniff again:
+      this.connectionListener(tlsSocket);
     }
   }
 

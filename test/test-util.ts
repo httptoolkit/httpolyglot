@@ -1,6 +1,7 @@
 import * as stream from 'stream';
 import * as fs from 'fs';
 import * as net from 'net';
+import * as tls from 'tls';
 
 export const testKey = fs.readFileSync(__dirname + '/fixtures/server.key');
 export const testCert = fs.readFileSync(__dirname + '/fixtures/server.crt');
@@ -33,9 +34,14 @@ export async function streamToBuffer(stream: stream.Readable): Promise<Buffer> {
     });
 }
 
-export async function sendRawRequest(server: net.Server, requestContent: string): Promise<string> {
-    const client = new net.Socket();
-    await new Promise<void>((resolve) => client.connect((server.address() as net.AddressInfo).port, '127.0.0.1', resolve));
+export async function sendRawRequest(target: net.Server | net.Socket, requestContent: string): Promise<string> {
+    let client: net.Socket;
+    if (target instanceof net.Server) {
+        client = new net.Socket();
+        await new Promise<void>((resolve) => client.connect((target.address() as net.AddressInfo).port, '127.0.0.1', resolve));
+    } else {
+        client = target;
+    }
 
     const dataPromise = new Promise<string>((resolve) => {
         client.on('data', function(data) {
@@ -47,4 +53,19 @@ export async function sendRawRequest(server: net.Server, requestContent: string)
     client.write(requestContent);
     client.end();
     return dataPromise;
+}
+
+export async function openRawTlsSocket(
+    target: net.Server,
+    options: tls.ConnectionOptions = {}
+): Promise<tls.TLSSocket> {
+    return await new Promise<tls.TLSSocket>((resolve, reject) => {
+        const socket: tls.TLSSocket = tls.connect({
+            host: '127.0.0.1',
+            port: (target.address() as net.AddressInfo).port,
+            ...options
+        });
+        socket.once('secureConnect', () => resolve(socket));
+        socket.once('error', reject);
+    });
 }
