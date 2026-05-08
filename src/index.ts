@@ -68,6 +68,16 @@ export interface HttpolyglotOptions {
   socks?: net.Server;
 
   /**
+   * Options to pass to the underlying http.Server constructor.
+   */
+  http?: http.ServerOptions;
+
+  /**
+   * Options to pass to the underlying http2.createServer call.
+   */
+  http2?: http2.ServerOptions;
+
+  /**
    * A custom handler for unknown protocols. If provided, any unrecognized protocol sockets will
    * be emitted on this server as 'connection' events. If not provided, the default behavior is to
    * pass the socket to the HTTP server, which will typically reject the connection as
@@ -112,8 +122,8 @@ class Server extends net.Server {
     const boundListener = Function.prototype.bind.call(requestListener, this);
 
     // Create subservers for each supported protocol:
-    this._httpServer = new http.Server(boundListener);
-    this._http2Server = http2.createServer({}, boundListener as any as Http2Listener);
+    this._httpServer = new http.Server(config.http ?? {}, boundListener);
+    this._http2Server = http2.createServer(config.http2 ?? {}, boundListener as any as Http2Listener);
 
     if (config.tls) {
       if (config.tls instanceof tls.Server) {
