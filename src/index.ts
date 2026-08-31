@@ -103,7 +103,10 @@ class Server extends net.Server {
   ) {
     // We just act as a plain TCP server, accepting and examing
     // each connection, then passing it to the right subserver.
-    super((socket) => this.connectionListener(socket));
+    // Registered explicitly rather than via super(), so that re-emitted sockets
+    // (server.emit('connection', socket), as proxies do after CONNECT) reach it too.
+    super();
+    this.on('connection', (socket) => this.connectionListener(socket));
 
     let config: HttpolyglotOptions = {};
     let requestListener: http.RequestListener;
